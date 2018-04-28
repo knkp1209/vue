@@ -1,14 +1,19 @@
-import Vue from 'vue'
-import Router from 'vue-router'
 import Login from '@/components/Login'
+import Aside from '@/components/Aside'
 
-Vue.use(Router)
+let routes = [
+  	{
+      path: '/',
+      name: 'Login',
+      component: Login
 
-export default new Router({
-  mode: 'history',
-  routes: [{
-    path: '/',
-		name: 'Login',
-		component: Login
-	}]
-})
+    },
+    {
+    	path: '/aside',
+    	name: 'Aside',
+    	component: Aside
+    },
+]
+
+export default routes
+
