@@ -1,9 +1,10 @@
 import Login from '@/components/Login'
 import Aside from '@/components/Aside'
+import Home from '@/components/Home'
 
 let routes = [
   	{
-      path: '/',
+      path: '/Login',
       name: 'Login',
       component: Login
 
@@ -13,6 +14,11 @@ let routes = [
     	name: 'Aside',
     	component: Aside
     },
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    }
 ]
 
 export default routes

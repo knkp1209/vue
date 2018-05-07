@@ -1,9 +1,26 @@
 <template>
   <div id="app">
-    <div class="header">
-      <p class="left">YangWenHang.org</p>
-      <p class="right"><a href="#">找回密码</a></p>
-    </div>
+    <el-container>
+    <el-header>
+      <div class="header">
+        <p class="left">YangWenHang.org</p>
+        <p class="right"><a href="#">找回密码</a></p>
+      </div>
+    </el-header>
+    </el-container>
+    <el-container>
+<el-aside>
+  b
+</el-aside>
+        <el-main>
+          a
+    </el-main>
+  </el-container>
+    <el-container>
+    <el-aside>a</el-aside>
+    <el-main>Main</el-main>
+  </el-container>
+  
     <router-view/>
   </div>
 </template>
@@ -22,6 +39,10 @@ body {
 
 * {
   font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+}
+
+.el-header{
+  padding: 0px 0px;
 }
 
 .header {

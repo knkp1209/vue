@@ -27,7 +27,7 @@ export default {
 	},
 	methods: {
 		abc: function() {
-			this.$router.push({ name: 'Aside'})
+			this.$router.push({ name: 'Home'})
 		}
 	},
 	watch: {
