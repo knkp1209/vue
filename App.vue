@@ -7,20 +7,7 @@
         <p class="right"><a href="#">找回密码</a></p>
       </div>
     </el-header>
-    </el-container>
-    <el-container>
-<el-aside>
-  b
-</el-aside>
-        <el-main>
-          a
-    </el-main>
-  </el-container>
-    <el-container>
-    <el-aside>a</el-aside>
-    <el-main>Main</el-main>
-  </el-container>
-  
+    </el-container>  
     <router-view/>
   </div>
 </template>
