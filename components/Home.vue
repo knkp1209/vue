@@ -20,7 +20,7 @@ export default {
   mounted () {
     this.$ajax({
       method: 'get',
-      url: '/api/taobao/api/v3/taobao_goods_list?sort_type=&sort=&address=&page=1&page_num=20&category_id=186&address=苏州&price=1000&sprice=400'
+      url: '/api/taobao/api/v3/taobao_goods_list?sort_type=&sort=&address=&page=1&page_num=20'
     })
   }
 }
