@@ -37,13 +37,10 @@ export default {
 		},
 		login: function(event) {
 
-			var gs = $("input[name='geetest_seccode']").val();
-			var gv = $("input[name='geetest_validate']").val();
-			var gc = $("input[name='geetest_challenge']").val();
-			
-			console.log(gs);
+			let [gs,gv,gc] = [$("input[name='geetest_seccode']").val(), $("input[name='geetest_validate']").val(), $("input[name='geetest_challenge']").val()];
 			if (gs && gv && gc && this.form.email && this.form.password) {
 				alert('yang');
+				alert(gs);
 			    this.$ajax({
 			      data:{
 			      	geetest_seccode:gs,

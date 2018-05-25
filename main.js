@@ -3,21 +3,22 @@
 import Vue from 'vue'
 import App from './App'
 import VueRouter from 'vue-router'
+import VeeValidate, { Validator } from 'vee-validate'
 import zh_CN from 'vee-validate/dist/locale/zh_CN'
-import VeeValidate, { Validator } from 'vee-validate';
 import routes from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import axios from 'axios';
 
-Validator.addLocale(zh_CN);
+// Validator.addLocale('zh_CN');
+Validator.localize('zh_CN')
 Vue.use(VeeValidate,{
-    	dictionary: {
+    dictionary: {
 			zh_CN
 		},
     	delay:0,
-       	fieldsBagName:'vee-fields',//默认为 fields
+      fieldsBagName:'vee-fields',//默认为 fields
     }
 )
 
