@@ -36,7 +36,16 @@ export default {
 			this.$router.push({ name: 'Home'})
 		},
 		login: function(event) {
+			this.$validator.validateAll().then((result) => {
+					console.log(result);
+			        if (result) {
+			// eslint-disable-next-line
+			          alert('From Submitted!');
+			          return;
+			        }
 
+			        alert('Correct them errors!');
+			      });
 			let [gs,gv,gc] = [$("input[name='geetest_seccode']").val(), $("input[name='geetest_validate']").val(), $("input[name='geetest_challenge']").val()];
 			if (gs && gv && gc && this.form.email && this.form.password) {
 				alert('yang');
