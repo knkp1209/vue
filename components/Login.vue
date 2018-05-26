@@ -1,16 +1,19 @@
 <template>
 	<div>
 		<el-row type="flex" justify="center">
-			<el-form ref="form" :model="form">
+			<el-form ref="form" :model="form" :rules="rules" >
 				<h1 class="login">欢迎！</h1>
-				<el-input class="login"  v-validate="'required'" name="email" v-model="form.email" placeholder="账号"></el-input>
-				<span>{{ errors.first('email') }}</span>
-				<el-input class="login" v-model="form.password" type="password" placeholder="密码"></el-input>
+				<el-form-item prop="email">
+					<el-input class="login" v-model="form.email" placeholder="账号"></el-input>
+				</el-form-item>
+				<el-form-item prop="password">
+					<el-input class="login" v-model="form.password" type="password" placeholder="密码"></el-input>
+				</el-form-item>
 				<div class="login box" id="captcha" ></div>
-				<el-button class="login" @click="login" size="small" type="primary">登录</el-button>
-				<input type="text" hidden="" />
-				<el-input class="login" v-model="form.md5password" type="hidden"></el-input>
-
+				<el-input class="login" v-model="form.sha_password" type="hidden"></el-input>
+				<el-form-item>
+					<el-button class="login" @click="login('form')" size="small" type="primary">登录</el-button>
+				</el-form-item>
 			</el-form>
 		</el-row>
 	</div>
@@ -27,7 +30,15 @@ export default {
 			form: {
 				email: '',
 				password: '',
-				md5password: '',
+				sha_password: '',
+			},
+			rules: {
+				email:[
+					{ required: true, message: '请输入账号', trigger: 'blur' }
+				],
+				password:[
+					{ required: true, message: '请输入密码', trigger: 'blur' }
+				],
 			}
 		}
 	},
@@ -35,49 +46,39 @@ export default {
 		abc: function() {
 			this.$router.push({ name: 'Home'})
 		},
-		login: function(event) {
-			this.$validator.validateAll().then((result) => {
-					console.log(result);
-			        if (result) {
-			// eslint-disable-next-line
-			          alert('From Submitted!');
-			          return;
-			        }
-
-			        alert('Correct them errors!');
-			      });
-			let [gs,gv,gc] = [$("input[name='geetest_seccode']").val(), $("input[name='geetest_validate']").val(), $("input[name='geetest_challenge']").val()];
-			if (gs && gv && gc && this.form.email && this.form.password) {
-				alert('yang');
-				alert(gs);
-			    this.$ajax({
-			      data:{
-			      	geetest_seccode:gs,
-			      	geetest_validate:gv,
-			      	geetest_challenge:gc,
-				    email:this.email,
-				    password:this.password
-				  },
-			      method: 'post',
-			      url: 'http://localhost/shop/index.php'
-			    })			
-			} else {
-
-			}
-		},
-		email: function(event) {
-			console.log('yang');
-			console.log(this);
+		login(formName) {
+			this.$refs[formName].validate((valid) => {
+				let [gs,gv,gc] = [$("input[name='geetest_seccode']").val(), $("input[name='geetest_validate']").val(), $("input[name='geetest_challenge']").val()];
+	          	if (valid && gs && gv && gc) {
+	          		this.$ajax({
+				      	data:{
+					      	geetest_seccode:gs,
+					      	geetest_validate:gv,
+					      	geetest_challenge:gc,
+						    email:this.form.email,
+						    sha_password:this.form.sha_password
+					  	},
+				      	method: 'post',
+				      	url: 'http://localhost/shop/index.php'
+					})
+	            	alert('submit!');
+	          	} else {
+	          		if (!gs || !gv || !gc) {
+	          			alert('请完成滑动验证！');
+	          		}
+	          		console.log('Not pass valid');
+	            	return false;
+	          	}
+	        });
 		}
-
 	},
 	watch: {
 		form: {
 			handler: (val, oldval) => {
 				if (val.password != '') {
-					val.md5password = sha1(val.password);
+					val.sha_password = sha1(val.password);
 				} else {
-					val.md5password = '';
+					val.sha_password = '';
 				}
 			},
 			deep: true
@@ -90,7 +91,6 @@ export default {
 <style scoped>
 .login {
 	width: 260px;
-	margin-bottom: 10px;
 	display: block;
 	font-size: 20px;
 }
@@ -98,6 +98,7 @@ export default {
 .box {
 	overflow:hidden;
 	border-radius: 2px;
+	margin-bottom: 10px;
 	/*box-sizing: border-box;*/
 	border-right :1px solid #ccc;
 	-moz-transform: translate3d(0, 0, 0);
