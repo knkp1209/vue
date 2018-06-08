@@ -8,6 +8,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import axios from 'axios';
+import Vuex from 'vuex'
+import store from './vuex/store'
 
 Vue.config.productionTip = true
 Vue.prototype.$ajax = axios
@@ -29,6 +31,7 @@ Vue.use(ElementUI)
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

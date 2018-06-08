@@ -14,6 +14,9 @@
 				<el-form-item>
 					<el-button class="login" @click="login('form')" size="small" type="primary">登录</el-button>
 				</el-form-item>
+				<p>
+			      Copyright&nbsp;&copy;&nbsp;{{author}} - 2016 All rights reserved
+			    </p>
 			</el-form>
 		</el-row>
 	</div>
@@ -27,6 +30,7 @@ export default {
 	name: 'Login',
 	data() {
 		return {
+			author: this.$store.state.author,
 			form: {
 				email: '',
 				password: '',
@@ -59,8 +63,17 @@ export default {
 						    sha_password:this.form.sha_password
 					  	},
 				      	method: 'post',
-				      	url: 'http://localhost/shop/index.php'
+				      	url: '/api/index.php',
+
 					})
+					.then(function(res){
+						console.log(res.data)
+					})
+					.catch(function(err){
+						console.log(err)
+					})
+					this.$store.commit('authorF',this.form.email)
+					this.author = this.$store.state.author
 	            	alert('submit!');
 	          	} else {
 	          		if (!gs || !gv || !gc) {
