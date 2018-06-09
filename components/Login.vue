@@ -54,6 +54,7 @@ export default {
 			this.$refs[formName].validate((valid) => {
 				let [gs,gv,gc] = [$("input[name='geetest_seccode']").val(), $("input[name='geetest_validate']").val(), $("input[name='geetest_challenge']").val()];
 	          	if (valid && gs && gv && gc) {
+	          		let _this = this;
 	          		this.$ajax({
 				      	data:{
 					      	geetest_seccode:gs,
@@ -67,7 +68,11 @@ export default {
 
 					})
 					.then(function(res){
-						console.log(res.data)
+						let {msg,result} = res.data
+						window.sessionStorage.setItem('user',result.user)
+						window.sessionStorage.setItem('user',result.permission)
+						_this.$router.addRoutes(result.permission)
+						_this.$router.push({ path: '/main' });
 					})
 					.catch(function(err){
 						console.log(err)
