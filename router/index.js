@@ -1,8 +1,9 @@
-import Login from '@/components/Login'
-import Aside from '@/components/Aside'
-import Home from '@/components/Home'
-import Main from '@/components/Main'
-import Maina from '@/components/Maina'
+const Login = () => import('@/components/Login')
+const Aside = () => import('@/components/Aside')
+const Home = () => import('@/components/Home')
+const Main = () => import('@/components/Main')
+const Maina = () => import('@/components/Maina')
+
 
 let routes = [
   	{
