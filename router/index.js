@@ -1,35 +1,28 @@
-const Login = () => import('@/components/Login')
-const Aside = () => import('@/components/Aside')
-const Home = () => import('@/components/Home')
-const Main = () => import('@/components/Main')
-const Maina = () => import('@/components/Maina')
-
-
 let routes = [
   	{
       path: '/Login',
       name: 'Login',
-      component: Login
+      component: () => import('@/components/Login')
 
     },
     {
       path: '/',
       name: 'Home',
-      component: Home,
+      component: () => import('@/components/Home'),
       children: [{
         path: '/aside',
         name: 'Aside',
-        component: Aside
+        component: () => import('@/components/Aside')
       },
       {
         path: '/maina',
         name: 'Maina',
-        component: Maina
+        component: () => import('@/components/Maina')
       },
       {
         path: '/main',
         name: 'Main',
-        component: Main
+        component: () => import('@/components/Main')
       }]
     }
 ]
