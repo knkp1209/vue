@@ -14,18 +14,17 @@
 				<el-form-item>
 					<el-button class="login" @click="login('form')" size="small" type="primary">登录</el-button>
 				</el-form-item>
-				<p>
-			      Copyright&nbsp;&copy;&nbsp;{{author}} - 2016 All rights reserved
-			    </p>
 			</el-form>
 		</el-row>
 	</div>
 </template>
 <script>
-import	sha1 from '../lib/sha1.js';
-import	gt from '../lib/gt.js';
-import	jq from '../lib/jquery-1.12.3.min.js';
-import	call_gt from '../lib/call_gt.js';
+import	sha1 from '@/lib/sha1.js';
+import	gt from '@/lib/gt.js';
+import	jq from '@/lib/jquery-1.12.3.min.js';
+import	call_gt from '@/lib/call_gt.js';
+import MenuUtils from '@/lib/MenuUtils'
+var routers = []
 export default {
 	name: 'Login',
 	data() {
@@ -63,6 +62,7 @@ export default {
 						    email:this.form.email,
 						    sha_password:this.form.sha_password
 					  	},
+					  　dataType: 'json',
 				      	method: 'post',
 				      	url: '/api/index.php',
 
@@ -71,15 +71,13 @@ export default {
 						let {msg,result} = res.data
 						window.sessionStorage.setItem('user',result.user)
 						window.sessionStorage.setItem('user',result.permission)
-						_this.$router.addRoutes(result.permission)
+						MenuUtils(routers,result.permission)
+						_this.$router.addRoutes(routers)
 						_this.$router.push({ path: '/main' });
 					})
 					.catch(function(err){
 						console.log(err)
 					})
-					this.$store.commit('authorF',this.form.email)
-					this.author = this.$store.state.author
-	            	alert('submit!');
 	          	} else {
 	          		if (!gs || !gv || !gc) {
 	          			alert('请完成滑动验证！');
