@@ -2,7 +2,7 @@
   <div>
     	<el-container>
     	  <el-aside>
-          <aside-tp></aside-tp>
+          <menu-tree></menu-tree>
         </el-aside>
     	  <el-main>
           <router-view/>
@@ -11,12 +11,10 @@
   </div>
 </template>
 <script>
-import Aside from '@/components/Aside'
+import MenuTree from '@/components/MenuTree'
 export default {
   name: 'Home',
-  components: {
-    'aside-tp': Aside
-  },
+  components: { MenuTree },
   mounted () {
     this.$ajax({
       method: 'get',
