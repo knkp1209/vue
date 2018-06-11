@@ -70,7 +70,7 @@ export default {
 					.then(function(res){
 						let {msg,result} = res.data
 						window.sessionStorage.setItem('user',result.user)
-						window.sessionStorage.setItem('user',result.permission)
+						window.sessionStorage.setItem('permission',JSON.stringify(result.permission))
 						MenuUtils(routers,result.permission)
 						_this.$router.addRoutes(routers)
 						_this.$router.push({ path: '/main' });
