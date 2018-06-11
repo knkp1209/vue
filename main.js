@@ -45,10 +45,10 @@ router.beforeEach((route, redirect, next) => {
 	if (!data && route.path !== '/login') {
 	  	next({ path: '/login' })
 	} else {
-	  	if (route.path) {
+	  	if (route.name) {
 	    	next()
 	  	} else {
-	   		next({ path: '/nofound' })
+	   		next({ path: '/404' })
 	  	}
 	}
 })
