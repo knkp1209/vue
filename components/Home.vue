@@ -14,8 +14,10 @@
             <menu-tree :nodes="nodes"></menu-tree>
           </el-menu>
         </el-aside>
-    	  <el-main>
+    	  <el-main v-loading="loading">
+        <transition name="el-zoom-in-bottom">
           <router-view/>
+        </transition>
         </el-main>
     	</el-container>
   </div>
@@ -57,12 +59,15 @@ export default {
     /*
     * 侧边栏折叠与展开的时改 aside 的宽度
     */
-    asideWitdh: function () {
+    asideWitdh () {
       if (this.isCollapse) {
         return '64px'
       } else {
         return '230px'
       }
+    },
+    loading () {
+      return this.$store.state.loading;
     }
   }
 }

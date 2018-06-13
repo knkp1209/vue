@@ -6,11 +6,11 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   // 定义状态
   state: {
-    author: 'Wise Wrong'
+    loading: true
   },
   mutations: {
-  	authorF (state,msg){
-  		state.author = msg
+  	Mloading (state,bool){
+  		state.loading = bool
   	}
   }
 })
