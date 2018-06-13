@@ -1,5 +1,6 @@
 <template>
   <div>
+      <p class="username">{{user}}</p>
     	<el-container>
     	  <el-aside>
           <el-menu>
@@ -18,13 +19,15 @@ export default {
   name: 'Home',
   data () {
     return {
-      nodes:{}
+      nodes:{},
+      user:''
     }
   },
   components: { MenuTree },
   created () {
     this.nodes = JSON.parse(window.sessionStorage.getItem('permission'))
     this.Finishing()
+    this.user = window.sessionStorage.getItem('user')
   },
   methods: {
     /*
@@ -54,5 +57,12 @@ export default {
 .el-main {
     background: #FFF8DC;
     height: 100%;
+}
+.username {
+  position: absolute;
+  right: 30px;
+  top: -8px;
+  color:white;
+  font-size:22px;
 }
 </style>

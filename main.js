@@ -39,6 +39,7 @@ router.beforeEach((route, redirect, next) => {
 	  	//而next()跳转过去之后，没有刷新页面，之前的规则还是存在的，但是使用location的话，可以刷新页面，当刷新页面的时候，整个app会重新加载
 	  	//而我们在刷新之前已经把sessionStorage里的user移除了，所以上面的添加路由也不行执行
 	  	window.sessionStorage.removeItem('permission')
+	  	window.sessionStorage.removeItem('user')
 	  	window.location.href = '/'
 	  	return false
 	}

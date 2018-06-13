@@ -4,7 +4,6 @@
     <el-header>
       <div class="header">
         <p class="left">YangWenHang.org</p>
-        <p class="right"><a href="#">找回密码</a></p>
       </div>
     </el-header>
     </el-container>  
@@ -35,14 +34,6 @@ body {
 .header {
   background: #409EFF;
   height: 60px;
-}
-
-.right {
-  float: right;
-  padding-right: 10px;
-  line-height: 30px;
-  height: 30px;
-  color: white;
 }
 
 .left {
