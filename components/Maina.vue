@@ -1,14 +1,17 @@
 <template>
 	<div>
-		<template v-for="(province,i) in provinces">
-			<p class="province" @mouseenter="open(i,before)">
+	  <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
+	  <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
+		  <template v-for="(province,i) in provinces">
+			  <p class="province" @mouseenter="open(i,before)">
 		      <el-checkbox :indeterminate="isIndeterminate[i]" v-model="checkAll[i]" @change="(val) => handleCheckAllChange(val,i)">{{province['province']}}</el-checkbox>
 		    </p>
 		    <el-checkbox-group size="mini"  v-model="checkList[i]" v-show="show[i]" @change="(value) => handleCheckedCitiesChange(value,i)">
 		      <el-checkbox-button v-for="(city,index) in province['city']" :label="city['name']" :key=index :checked="city['checked']">
 			  </el-checkbox-button>
 		    </el-checkbox-group>
-		</template>
+			</template>
+	  </el-dialog>
 	</div>
 </template>
 <script>
@@ -24,6 +27,7 @@ export default {
 			isIndeterminate: {},
 			checkAll: {},
 			allcity: {},
+			dialogTableVisible: false,
 		}
 	},
 	created () {
@@ -108,7 +112,4 @@ export default {
 </script>
 
 <style scoped>
-	div {
-		background: #FFE7BA;
-	}
 </style>
