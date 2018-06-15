@@ -10,12 +10,16 @@
 				  trigger="hover"
 			  >
 					<el-checkbox-group size="mini"  v-model="checkList[i]"  @change="(value) => handleCheckedCitiesChange(value,i)">
-			      <el-checkbox-button v-for="(city,index) in province['city']" :label="city['name']" :key=index :checked="city['checked']">
+			      <el-checkbox-button v-for="(city,index) in province['city']" :label="index" :key=index :checked="city['checked']">{{city['name']}}
 				  	</el-checkbox-button>
 			    </el-checkbox-group>
 				  <el-button type="text" size="mini" slot="reference">{{province['province']}}</el-button>
 				</el-popover>
 			</p>
+			<div slot="footer" class="dialog-footer">
+	    <el-button @click="dialogTableVisible = false">取 消</el-button>
+	    <el-button type="primary" @click="print">确 定</el-button>
+	  </div>
 	  </el-dialog>
 	</div>
 </template>
@@ -32,6 +36,7 @@ export default {
 			checkAll: {},
 			allcity: {},
 			dialogTableVisible: false,
+			checkedCode:[],
 		}
 	},
 	created () {
@@ -66,7 +71,7 @@ export default {
 					let count = 0;
 					let cities = Object.keys(this.provinces[item]['city']);
 				    cities.forEach((index)=> {
-						this.allcity[item].push(this.provinces[item]['city'][index]['name'])
+						this.allcity[item].push(index)
 						if(this.provinces[item]['city'][index]['checked'] == true) {
 							count++;
 						}
@@ -94,7 +99,33 @@ export default {
 	      let checkedCount = value.length;
 	      this.checkAll[i] = checkedCount === this.allcity[i].length;
 	      this.isIndeterminate[i] = checkedCount > 0 && checkedCount < this.allcity[i].length
-	    }
+	    },	  
+	    print () {
+	    	this.checkedCode = [];
+		  	Object.keys(this.checkList).forEach((key) =>{
+		  		if (this.checkList[key]) {
+			  		this.checkList[key].forEach((item) =>{
+			  			this.checkedCode.push(item)
+			  		})
+		  		}
+		  	})
+		  	this.$ajax({
+				  　dataType: 'json',
+				    	method: 'post',
+				    	url: '/api/index/index/post',
+				    	data:{
+				    		city_codes: this.checkedCode
+				    	}
+				})
+				.then(function(res){
+					let {msg,result} = res.data
+					console.log(result)
+				})
+				.catch(function(err){
+					console.log(err)
+					alert('页面异常，请手动刷新页面，按 F5 ')
+				})
+		  }
 	}
 }
 </script>
