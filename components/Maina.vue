@@ -1,9 +1,9 @@
 <template>
 	<div>
 	  <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
-	  <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
+	  <el-dialog width="700px" title="收货地址" :visible.sync="dialogTableVisible">
 		  <template v-for="(province,i) in provinces">
-			  <p class="province" @mouseenter="open(i,before)">
+			  <p style="display: inline-block; width: 150px; padding: 20px 2px;" @mouseenter="open(i,before)">
 		      <el-checkbox :indeterminate="isIndeterminate[i]" v-model="checkAll[i]" @change="(val) => handleCheckAllChange(val,i)">{{province['province']}}</el-checkbox>
 		    </p>
 		    <el-checkbox-group size="mini"  v-model="checkList[i]" v-show="show[i]" @change="(value) => handleCheckedCitiesChange(value,i)">
@@ -71,13 +71,13 @@ export default {
 						if(this.provinces[item]['city'][index]['checked'] == true) {
 							count++;
 						}
-					    let checkedCount = count;
-					    this.checkAll[item] = checkedCount === cities.length;
-					    this.isIndeterminate[item] = checkedCount > 0 && checkedCount < cities.length
 					})
+					this.checkAll[item] = count === cities.length;
+					this.isIndeterminate[item] = count > 0 && count < cities.length
 				}
 			})
 			this.checkList = Object.assign({}, this.checkList, temp)
+			this.checkAll = Object.assign({}, this.checkAll, this.checkAll)
 			this.show = Object.assign({}, this.show, showtemp)
 			this.isIndeterminate = Object.assign({}, this.isIndeterminate, isIndeterminatetemp)
 			this.allcity = Object.assign({}, this.allcity, allcitytemp)
