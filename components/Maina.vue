@@ -59,17 +59,14 @@ export default {
 		*	创建整理数据
 		*/
 		creatCheckboxGroup () {
-			let temp = {}
-			let isIndeterminatetemp = {}
-			let allcitytemp = {}
 			Object.keys(this.provinces).forEach((item)=> {
-				temp[item] = []
 				if (this.provinces[item]['city']) {
-					allcitytemp[item] = []
+					this.checkList[item] = []
+					this.allcity[item] = []
 					let count = 0;
 					let cities = Object.keys(this.provinces[item]['city']);
 				    cities.forEach((index)=> {
-						allcitytemp[item].push(this.provinces[item]['city'][index]['name'])
+						this.allcity[item].push(this.provinces[item]['city'][index]['name'])
 						if(this.provinces[item]['city'][index]['checked'] == true) {
 							count++;
 						}
@@ -78,10 +75,10 @@ export default {
 					this.isIndeterminate[item] = count > 0 && count < cities.length
 				}
 			})
-			this.checkList = Object.assign({}, this.checkList, temp)
+			this.checkList = Object.assign({}, this.checkList, this.checkList)
 			this.checkAll = Object.assign({}, this.checkAll, this.checkAll)
-			this.isIndeterminate = Object.assign({}, this.isIndeterminate, isIndeterminatetemp)
-			this.allcity = Object.assign({}, this.allcity, allcitytemp)
+			this.isIndeterminate = Object.assign({}, this.isIndeterminate, this.isIndeterminate)
+			this.allcity = Object.assign({}, this.allcity, this.allcity)
 		},
 	    /*
 	    *	全选
