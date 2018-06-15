@@ -1,13 +1,12 @@
 <template>
 	<div>
-	  <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
+	  <el-button type="text" @click="dialogTableVisible = true">省份</el-button>
 	  <el-dialog width="700px" title="收货地址" :visible.sync="dialogTableVisible">
 		  <p style="display: inline-block; padding: 2px 15px" v-for="(province,i) in provinces">
 		    <el-checkbox :indeterminate="isIndeterminate[i]" v-model="checkAll[i]" @change="(val) => handleCheckAllChange(val,i)"></el-checkbox>
 		    <el-popover
 				  placement="top-start"
 				  :title="province['province']"
-				  width="200"
 				  trigger="hover"
 			  >
 					<el-checkbox-group size="mini"  v-model="checkList[i]"  @change="(value) => handleCheckedCitiesChange(value,i)">
