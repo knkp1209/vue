@@ -1,12 +1,13 @@
 <template>
 	<div>
 		{{title}}
-		<images @imageIds="(i) => getImageIds(i,'imgids')"></images>
-		<images ></images>
-		<template v-for="(item) in imgids">
+		<images :storeName="'abcImgids'" @imageIds="getImageIds"></images>
+		<images :storeName="'bbcImaids'" @imageIds="getImageIds"></images>
+		<template v-for="(item) in abcImgids">
 			{{item}}
 		</template>
-		<template v-for="(item) in imgaids">
+		<br />
+		<template v-for="(item) in bbcImaids">
 			{{item}}
 		</template>
 	</div>
@@ -18,8 +19,8 @@ export default {
 	data () {
 		return {
 			title:'',
-			imgids:'',
-			imgaids:'',
+			abcImgids:[],
+			bbcImaids:[],
 		}
 	},
 	components: { Images },
@@ -43,8 +44,8 @@ export default {
 		})
 	},
 	methods:{
-		getImageIds(ids,a){
-			this.imgids = ids
+		getImageIds(ids,storeName){
+			this[storeName]= ids
 		}
 	}
 }

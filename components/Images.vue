@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-upload
-		  action="http://localhost/shop/index/index/upload"
+		  action="/api/index/index/upload"
 		  list-type="picture-card"
 		  drag
 		  :on-preview="handlePictureCardPreview"
@@ -19,7 +19,7 @@
 <script>
 
 export default {
-	name: 'Main',
+	name: 'Images',
   data() {
     return {
       dialogImageUrl: '',
@@ -27,10 +27,15 @@ export default {
       imageId:[],
     };
   },
+	props: {
+	  storeName: { // 父组件的定义数据对象
+	    required: true
+	  }
+	},
 	methods: {
     handleRemove(file, fileList) {
       this.currentFileList(fileList)
-      this.$emit('imageIds',this.imageId)
+      this.$emit('imageIds',this.imageId,this.storeName)
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -38,7 +43,7 @@ export default {
     },
     handleSuccess(response,file,fileList){
     	this.currentFileList(fileList)
-    	this.$emit('imageIds',this.imageId)
+    	this.$emit('imageIds',this.imageId,this.storeName)
     },
     /*
     *	当前文件列表ID(ID由服务端返回)
@@ -49,7 +54,6 @@ export default {
     		this.imageId.push(fileList[item]['response']['result'])
     	})
     },
-
   }
 }
 </script>
