@@ -10,10 +10,12 @@
 		<template v-for="(item) in bbcImaids">
 			{{item}}
 		</template>
+		<spec></spec>
 	</div>
 </template>
 <script>
 import Images from '@/components/Images'
+import Spec from '@/components/Spec'
 export default {
 	name: 'Main',
 	data () {
@@ -21,9 +23,10 @@ export default {
 			title:'',
 			abcImgids:[],
 			bbcImaids:[],
+			cbcImaids:[],
 		}
 	},
-	components: { Images },
+	components: { Images,Spec },
 	created () {
 		this.$store.commit('Mloading',true)
 		let _this = this
