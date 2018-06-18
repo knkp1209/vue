@@ -4,9 +4,12 @@
 		  action="/api/index/index/upload"
 		  list-type="picture-card"
 		  drag
+		  :limit="maxUpload"
 		  :on-preview="handlePictureCardPreview"
 		  :on-remove="handleRemove"
 		  :on-success="handleSuccess"
+		  :on-exceed="handleExceed"
+		  :before-upload="handleBeforeUpload"
 		  multiple>
 		  <i class="el-icon-upload"></i>
 		  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -45,6 +48,17 @@ export default {
     	this.currentFileList(fileList)
     	this.$emit('imageIds',this.imageId,this.storeName)
     },
+    handleExceed(files, fileList){
+    	this.$message.error('图片最多上传' + this.$store.state.maxUpload + '张')
+    },
+    handleBeforeUpload(file){
+      const isLt2M = file.size / 1024 / 1024 < this.$store.state.maxSize;
+
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!');
+      }
+      return isLt2M;
+    },
     /*
     *	当前文件列表ID(ID由服务端返回)
     */
@@ -54,6 +68,11 @@ export default {
     		this.imageId.push(fileList[item]['response']['result'])
     	})
     },
+  },
+  computed: {
+    maxUpload () {
+      return this.$store.state.maxUpload;
+    }
   }
 }
 </script>

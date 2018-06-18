@@ -74,6 +74,10 @@ export default {
 						MenuUtils(routers,result.permission)
 						_this.$router.addRoutes(routers)
 						_this.$router.push({ path: '/main' });
+						window.sessionStorage.setItem('MmaxUpload',JSON.stringify(result.max_upload))
+						window.sessionStorage.setItem('MmaxSize',JSON.stringify(result.max_size))
+						_this.$store.commit('MmaxUpload',result.max_upload)
+						_this.$store.commit('MmaxSize',result.max_size)
 					})
 					.catch(function(err){
 						console.log(err)

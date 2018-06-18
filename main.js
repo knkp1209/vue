@@ -30,6 +30,10 @@ if (data) {
   	let routes = []
   	MenuUtils(routes, data)
   	router.addRoutes(routes)
+  	let maxUpload = JSON.parse(window.sessionStorage.getItem('MmaxUpload'))
+  	let maxSize = JSON.parse(window.sessionStorage.getItem('MmaxSize'))
+  	store.commit('MmaxUpload',maxUpload)
+  	store.commit('MmaxSize',maxSize)
 }
 
 router.beforeEach((route, redirect, next) => {
