@@ -217,6 +217,7 @@ export default {
             let values = [];
             Object.keys(this.check_list).forEach((key) => {
                 if (this.check_list[key].length > 0) {
+                    values = [];
                     this.return_spec_list[key] = {}
                     this.return_spec_list[key].name = this.spec_list[key]['name']
                     this.check_list[key].forEach((item) => {
