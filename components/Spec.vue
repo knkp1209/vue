@@ -144,7 +144,7 @@ export default {
         edit(i) {
             this.spec_id = i
             this.spec_name = this.spec_list[i].name
-            this.spec_values = Object.assign({}, this.spec_list[i].values)
+            this.spec_values = Object.values(this.spec_list[i].values);
             this.dialog_add_spec_visible = true
         },
         /*
@@ -214,17 +214,17 @@ export default {
          *   将选中的规格整理输出给调用组件
          */
         out() {
-            let values = [];
+            let values = {};
+            this.return_spec_list = [];
             Object.keys(this.check_list).forEach((key) => {
                 if (this.check_list[key].length > 0) {
-                    values = [];
+                    values = {};
                     this.return_spec_list[key] = {}
                     this.return_spec_list[key].name = this.spec_list[key]['name']
                     this.check_list[key].forEach((item) => {
-                        values.push(this.spec_list[key]['values'][item])
+                        values[item] = this.spec_list[key]['values'][item]
                     })
                     this.return_spec_list[key].values = values
-
                 }
             })
             this.$emit('e_spec_list', this.return_spec_list);
