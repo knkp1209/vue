@@ -45,7 +45,7 @@ export default {
 	    this.$ajax({
 		  　dataType: 'json',
 	      	method: 'get',
-	      	url: '/api/index/index/area',
+	      	url: this.base_url + '/index/index/area',
 		})
 		.then(function(res){
 			let {msg,result} = res.data
@@ -112,7 +112,7 @@ export default {
 		  	this.$ajax({
 				  　dataType: 'json',
 				    	method: 'post',
-				    	url: '/api/index/index/post',
+				    	url: this.base_url + '/index/index/post',
 				    	data:{
 				    		city_codes: this.checkedCode
 				    	}

@@ -17,6 +17,7 @@ import zh_CN from 'vee-validate/dist/locale/zh_CN'
 
 Vue.config.productionTip = true
 Vue.prototype.$ajax = axios
+Vue.prototype.base_url = '/api'
 
 Vue.use(VueRouter)
 

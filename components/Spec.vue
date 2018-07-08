@@ -76,7 +76,7 @@ export default {
             this.$ajax({
                 dataType: 'json',
                 method: 'get',
-                url: '/api/index/index/spec',
+                url: this.base_url + '/index/index/spec',
             }).then(function(res) {
                 let { msg, result } = res.data
                 _this.spec_list = result
@@ -95,18 +95,18 @@ export default {
             var url = ''
             var data = {}
             if (is_delete === true) {
-                url = '/api/index/index/delete'
+                url = this.base_url + '/index/index/delete'
                 data = {
                     id: this.spec_id
                 }
             } else if (this.spec_id === false) {
-                url = '/api/index/index/add'
+                url = this.base_url + '/index/index/add'
                 data = {
                     name: this.spec_name,
                     values: this.spec_values
                 }
             } else {
-                url = '/api/index/index/edit'
+                url = this.base_url + '/index/index/edit'
                 data = {
                     name: this.spec_name,
                     values: this.spec_values,

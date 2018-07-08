@@ -22,7 +22,6 @@
 import	sha1 from '@/lib/sha1.js';
 import MenuUtils from '@/lib/MenuUtils'
 
-
 var handler = function (captchaObj) {
     captchaObj.appendTo("#captcha");
     captchaObj.onSuccess(function () {
@@ -83,8 +82,7 @@ export default {
 					  	},
 					  　dataType: 'json',
 				      	method: 'post',
-				      	url: '/api/index',
-
+				      	url: this.base_url + '/index',
 					})
 					.then(function(res){
 						let {msg,result} = res.data
