@@ -20,10 +20,32 @@
 </template>
 <script>
 import	sha1 from '@/lib/sha1.js';
-import	gt from '@/lib/gt.js';
-import	jq from '@/lib/jquery-1.12.3.min.js';
-import	call_gt from '@/lib/call_gt.js';
 import MenuUtils from '@/lib/MenuUtils'
+
+
+var handler = function (captchaObj) {
+    captchaObj.appendTo("#captcha");
+    captchaObj.onSuccess(function () {
+        //验证成功执行
+     });
+    captchaObj.onReady(function () {
+        //加载完毕执行
+    });
+};
+$.ajax({
+   url: "/api/geetest.html?t=" + (new Date()).getTime(),
+   type: "get",
+   dataType: "json",
+   success: function (data) {
+   initGeetest({
+        gt: data.gt,
+        challenge: data.challenge,
+        product: "float",
+        offline: !data.success
+      }, handler);
+   }
+});
+
 var routers = []
 export default {
 	name: 'Login',
@@ -46,9 +68,6 @@ export default {
 		}
 	},
 	methods: {
-		abc: function() {
-			this.$router.push({ name: 'Home'})
-		},
 		login(formName) {
 			this.$refs[formName].validate((valid) => {
 				let [gs,gv,gc] = [$("input[name='geetest_seccode']").val(), $("input[name='geetest_validate']").val(), $("input[name='geetest_challenge']").val()];
@@ -64,7 +83,7 @@ export default {
 					  	},
 					  　dataType: 'json',
 				      	method: 'post',
-				      	url: '/api/index.php',
+				      	url: '/api/index',
 
 					})
 					.then(function(res){
