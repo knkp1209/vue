@@ -1,10 +1,10 @@
 <template>
     <div>
-        <el-switch v-model="unified" active-text="多规格" inactive-text="统一规格" @change="manySpec"></el-switch>
+        <el-switch class="s_spec" v-model="unified" active-text="多规格" inactive-text="统一规格" @change="manySpec"></el-switch>
         <template v-if="unified">
             <Spec @e_spec_list="createSpecTable"></Spec>
         </template>
-        <el-table :data="table_data" stripe @selection-change="handleSelectionChange">
+        <el-table :data="table_data" stripe @selection-change="handleSelectionChange" ref="spec_table">
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column width="100" :label="item" :key="index" v-for="(item,index) in spec_names">
@@ -17,17 +17,17 @@
                     <el-input @input.native="check($event,'库存','stock')" :name="'stock_' + scope.$index" v-validate="'required|numeric|min_value:0|max_value:99999999'" v-model="post_data[scope.$index].stock" placeholder="库存"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column label="销售价">
+            <el-table-column width="135" label="销售价">
                 <template slot-scope="scope">
                     <el-input @input.native="check($event,'销售价','sell_price')" v-validate="'required|decimal:2|min_value:0|max_value:99999999'" :name="'sell_price' + scope.$index" v-model="post_data[scope.$index].sell_price" placeholder="销售价"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column label="原价" select-on-indeterminate>
+            <el-table-column width="135" label="原价" select-on-indeterminate>
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'原价','price')" v-validate="'required|decimal:2|min_value:0|max_value:99999999'" :name="'price' + scope.$index" v-model="post_data[scope.$index].price" placeholder="原价"></el-input>
+                    <el-input @input.native="check($event,'原价','price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'price' + scope.$index" v-model="post_data[scope.$index].price" placeholder="原价"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column label="成本价">
+            <el-table-column width="135" label="成本价">
                 <template slot-scope="scope">
                     <el-input @input.native="check($event,'成本价','cost_price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'cost_price' + scope.$index" v-model="post_data[scope.$index].cost_price" placeholder="成本价"></el-input>
                 </template>
@@ -70,7 +70,7 @@ export default {
     name: 'SpecTable',
     data() {
         return {
-            unified: true,
+            unified: false,
             table_data: [],
             spec_names: {},
             post_data: [{
@@ -83,12 +83,13 @@ export default {
                 bar_code: '',
                 product_number: '',
             }],
-            spec_checked_row:[],
+            spec_checked_row: [],
+            s: {},
         };
     },
     components: { Spec },
     created() {
-        // this.manySpec(false);
+        this.manySpec(false);
     },
     methods: {
         handleEdit(index, row) {
@@ -110,37 +111,41 @@ export default {
          */
         createSpecTable(data) {
             this.table_data = []
-            let values = {}
-            let data_key = Object.keys(data)
-            if (data_key.length > 3) {
-                this.$message.error('规格不能超过3个,请重新选择！');
-                return false;
-            }
-            data_key.forEach((key, index) => {
-                values = data[key].values
-                let big_temp = [];
-                if (index == 0) {
-                    Object.keys(values).forEach((v_key, v_index) => {
-                        this.$set(this.table_data, v_index, {
-                            [key]: values[v_key]
-                        })
-                    })
-                } else {
-                    this.table_data.forEach((item) => {
-                        Object.keys(values).forEach((v_key, v_index) => {
-                            let temp = {}
-                            temp = Object.assign({}, temp, item)
-                            temp[key] = values[v_key]
-                            big_temp.push(temp);
-                        })
-                    })
-                    this.table_data = big_temp;
+            // 此处由于可能是因为上面赋值问题
+            setTimeout(() => {
+                this.spec_names = {}
+                let values = {}
+                let data_key = Object.keys(data)
+                if (data_key.length > 3) {
+                    this.$message.error('规格不能超过3个,请重新选择！');
+                    return false;
                 }
-                this.spec_names[key] = data[key].name
-            })
-            this.spec_names = Object.assign({}, this.spec_names, this.spec_names)
-            this.createSpuListStorage(this.table_data.length)
-            this.creatteIndx(this.table_data.length)
+                data_key.forEach((key, index) => {
+                    this.spec_names[key] = data[key].name
+                    this.spec_names = Object.assign({}, this.spec_names, this.spec_names)
+                    values = data[key].values
+                    let big_temp = [];
+                    if (index == 0) {
+                        Object.keys(values).forEach((v_key, v_index) => {
+                            this.$set(this.table_data, v_index, {
+                                [key]: values[v_key]
+                            })
+                        })
+                    } else {
+                        this.table_data.forEach((item) => {
+                            Object.keys(values).forEach((v_key, v_index) => {
+                                let temp = {}
+                                temp = Object.assign({}, temp, item)
+                                temp[key] = values[v_key]
+                                big_temp.push(temp);
+                            })
+                        })
+                        this.table_data = big_temp;
+                    }
+                })
+                this.createSpuListStorage(this.table_data.length)
+                this.creatteIndx(this.table_data.length)
+            }, 0);
         },
         /*
          *   创建单品列表的信息容器
@@ -169,36 +174,42 @@ export default {
         },
         handleSelectionChange(val) {
             this.spec_checked_row = [];
-            val.forEach((item,index,arr) => {
+            val.forEach((item, index, arr) => {
                 this.spec_checked_row.push(item['index'])
             })
             console.log(this.spec_checked_row);
         },
-        test() {
-            console.log(this.post_data);
-        },
-        check(e, tip, name) {    
+        check(e, tip, name) {
             this.$validator.validate(e.target.name, e.target.value).then(result => {
                 if (!result) {
                     // do stuff if not valid.
-                    console.log(this.errors.items)
                     let error_tip = this.errors.items[0].msg;
-                    let index = error_tip.indexOf(" ",2) + 1;
+                    let index = error_tip.indexOf(" ", 2) + 1;
                     this.$message({
                         showClose: true,
-                        message:tip + error_tip.substring(index),
-                        type:'error',
-                        duration:1500,
+                        message: tip + error_tip.substring(index),
+                        type: 'error',
+                        duration: 1500,
                     });
-                    // e.target.focus()
+                    $(e.target).addClass('input_error')
+                } else {
+                    $(e.target).removeClass('input_error')
                 }
             });
-            let _this = this;
             this.spec_checked_row.forEach((i) => {
-                _this.post_data[i][name] =  e.target.value
+                this.post_data[i][name] = e.target.value
             })
         },
-
+        checkAll() {
+            this.$validator.validateAll().then(result => {
+                if (!result) {
+                    this.errors.items.forEach((item, index) => {
+                        $("input[name='" + item['field'] + "']").addClass('input_error')
+                    })
+                }
+                this.$emit('emit_v_spec','spec_table',result);
+            })            
+        }
     }
 }
 
@@ -209,6 +220,17 @@ export default {
     position: fixed;
     top: 25%;
     left: 50%;
+}
+
+.s_spec {
+    float:left;
+    height: 40px;
+    margin-right: 20px;
+}
+</style>
+<style>
+.input_error {
+    border: 1px solid red !important;
 }
 
 </style>
