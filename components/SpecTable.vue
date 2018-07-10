@@ -73,18 +73,10 @@ export default {
             unified: false,
             table_data: [],
             spec_names: {},
-            post_data: [{
-                stock: '',
-                sell_price: '',
-                price: '',
-                cost_price: '',
-                freight: '',
-                weight: '',
-                bar_code: '',
-                product_number: '',
-            }],
+            spec_names_length: 0,
+            post_data: [],
             spec_checked_row: [],
-            s: {},
+            spec_data: {},
         };
     },
     components: { Spec },
@@ -99,11 +91,29 @@ export default {
             console.log(index, row);
         },
         manySpec(value) {
+            this.post_data = []
+            this.spec_names_length = 0;
+            this.table_data = [];
             if (value === false) {
                 this.spec_names = {}
-                this.table_data = [
-                    []
-                ]
+                this.post_data.push({
+                    spec_value: '',
+                    stock: '',
+                    sell_price: '',
+                    price: '',
+                    cost_price: '',
+                    freight: '',
+                    weight: '',
+                    bar_code: '',
+                    product_number: '',
+                })
+                this.$nextTick(()  => {
+                    this.table_data = [
+                        []
+                    ]
+                })
+            } else {
+                this.table_data = []
             }
         },
         /*
@@ -111,8 +121,10 @@ export default {
          */
         createSpecTable(data) {
             this.table_data = []
+            this.post_data = []
+            this.spec_data = Object.assign({}, this.spec_data, data)
             // 此处由于可能是因为上面赋值问题
-            setTimeout(() => {
+            this.$nextTick(() => {
                 this.spec_names = {}
                 let values = {}
                 let data_key = Object.keys(data)
@@ -127,7 +139,7 @@ export default {
                     let big_temp = [];
                     if (index == 0) {
                         Object.keys(values).forEach((v_key, v_index) => {
-                            this.$set(this.table_data, v_index, {
+                            this.table_data.push({
                                 [key]: values[v_key]
                             })
                         })
@@ -152,7 +164,12 @@ export default {
          */
         createSpuListStorage(length) {
             for (let i = 0; i < length; i++) {
-                this.$set(this.post_data, i, {
+                let temp = {}
+                Object.keys(this.table_data[i]).forEach((key) => {
+                    temp[this.spec_names[key]] = this.table_data[i][key]
+                })
+                this.post_data.push({
+                    spec_value: JSON.stringify(temp),
                     stock: '',
                     sell_price: '',
                     price: '',
@@ -172,13 +189,18 @@ export default {
                 this.table_data[i]['index'] = i;
             }
         },
+        /*
+        *   选中行
+        */
         handleSelectionChange(val) {
             this.spec_checked_row = [];
             val.forEach((item, index, arr) => {
                 this.spec_checked_row.push(item['index'])
             })
-            console.log(this.spec_checked_row);
         },
+        /*
+        *   规格信息输入验证
+        */
         check(e, tip, name) {
             this.$validator.validate(e.target.name, e.target.value).then(result => {
                 if (!result) {
@@ -200,15 +222,22 @@ export default {
                 this.post_data[i][name] = e.target.value
             })
         },
+        /*
+        *   规格信息全部验证并将规格数据返回给父组件
+        */
         checkAll() {
             this.$validator.validateAll().then(result => {
                 if (!result) {
                     this.errors.items.forEach((item, index) => {
                         $("input[name='" + item['field'] + "']").addClass('input_error')
                     })
+                } else {
+                    let data = {}
+                    data['spec'] = this.spec_data
+                    data['products'] = this.post_data
+                    this.$emit('emit_v_spec', 'spec_table', data);
                 }
-                this.$emit('emit_v_spec','spec_table',result);
-            })            
+            })
         }
     }
 }
@@ -223,10 +252,11 @@ export default {
 }
 
 .s_spec {
-    float:left;
+    float: left;
     height: 40px;
     margin-right: 20px;
 }
+
 </style>
 <style>
 .input_error {
