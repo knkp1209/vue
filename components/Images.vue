@@ -37,7 +37,7 @@ export default {
 	},
 	methods: {
     handleRemove(file, fileList) {
-      this.currentFileList(fileList)
+      this.myDel(file)
       this.$emit('imageIds',this.imageId,this.storeName)
     },
     handlePictureCardPreview(file) {
@@ -45,14 +45,14 @@ export default {
       this.dialogVisible = true;
     },
     handleSuccess(response,file,fileList){
-    	this.currentFileList(fileList)
+      this.myAdd(response)
     	this.$emit('imageIds',this.imageId,this.storeName)
     },
     handleExceed(files, fileList){
     	this.$message.error('图片最多上传' + this.$store.state.maxUpload + '张')
     },
     handleBeforeUpload(file){
-      const isLt2M = file.size / 1024 / 1024 < this.$store.state.maxSize;
+      const isLt2M = file.size / 1024 / 1024 <= this.$store.state.maxSize;
 
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过 2MB!');
@@ -60,14 +60,27 @@ export default {
       return isLt2M;
     },
     /*
-    *	当前文件列表ID(ID由服务端返回)
+    *	当前文件列表ID(ID由服务端返回) 废弃
     */
     currentFileList(fileList){
     	this.imageId = [];
     	Object.keys(fileList).forEach((item)=>{
-    		this.imageId.push(fileList[item]['response']['result'])
+        this.imageId.push(fileList[item]['response']['result'])
     	})
     },
+    /*
+    * 添加成功上传的图片ID
+    */
+    myAdd(response) {
+      this.imageId.push(response['result'])
+    },
+    myDel(file) {
+      let val = file['response']['result'];
+      let index = this.imageId.indexOf(val);
+      if (index > -1) {
+        this.imageId.splice(index,1);
+      }
+    }
   },
   computed: {
     maxUpload () {
