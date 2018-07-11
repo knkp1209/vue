@@ -54,4 +54,8 @@ a:hover {
   text-decoration: underline;
 }
 
+.my_err {
+  color: red;
+}
+
 </style>
