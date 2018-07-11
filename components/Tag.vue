@@ -14,13 +14,12 @@ export default {
   name: 'Tag',
   data() {
     return {
-      dynamicTags: this.storeName,
       inputVisible: false,
       inputValue: ''
     }
   },
   props: {
-    storeName: { // 父组件的定义数据对象
+    dynamicTags: { // 父组件的定义数据对象
       required: true
     },
     tip: {
