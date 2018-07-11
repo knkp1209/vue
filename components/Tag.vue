@@ -3,9 +3,10 @@
     <el-tag :key="index" v-for="(tag,index) in dynamicTags" closable :disable-transitions="false" @close="handleClose(tag)">
       {{tag}}
     </el-tag>
-    <el-input class="input-new-tag" v-validate="'max:10'" :placeholder="tip" v-if="inputVisible" v-model="declare" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+    <el-input class="input-new-tag" name="n_tip" v-validate="'max:10'" :placeholder="tip" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
     </el-input>
     <el-button v-else class="button-new-tag" size="small" @click="showInput">添加</el-button>
+    <i class="my_err" v-show="errors.has('n_tip')">{{errors.first('n_tip')}}</i>
   </div>
 </template>
 <script>
@@ -15,7 +16,7 @@ export default {
     return {
       dynamicTags: this.storeName,
       inputVisible: false,
-      declare: ''
+      inputValue: ''
     }
   },
   props: {
@@ -38,15 +39,20 @@ export default {
       });
     },
     handleInputConfirm() {
-      let declare = this.declare;
-      if (declare) {
-        this.dynamicTags.push(declare);
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.$validator.validateAll().then(result => {
+          if (result) {
+            this.dynamicTags.push(inputValue);
+          }
+        })
       }
       this.inputVisible = false;
-      this.declare = '';
+      this.inputValue = '';
     }
   }
 }
+
 </script>
 <style scoped>
 .el-tag+.el-tag {
@@ -67,4 +73,5 @@ export default {
   width: 180px;
   font-size: 12px;
 }
+
 </style>
