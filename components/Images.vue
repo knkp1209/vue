@@ -91,11 +91,11 @@ export default {
 </style>
 <style>
 .el-upload-dragger {
-  width: 230px;
-  height: 150px;
+  width: 230px !important;
+  height: 150px !important;
 }
 .el-upload--picture-card{
-	width:auto;
-	height:auto;
+	width:auto !important;
+	height:auto !important;
 }
 </style>
