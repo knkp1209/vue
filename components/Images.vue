@@ -27,18 +27,16 @@ export default {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
-      imageId:[],
     };
   },
 	props: {
-	  storeName: { // 父组件的定义数据对象
+	  imageId: { // 父组件的定义数据对象
 	    required: true
 	  }
 	},
 	methods: {
     handleRemove(file, fileList) {
       this.myDel(file)
-      this.$emit('imageIds',this.imageId,this.storeName)
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -46,7 +44,6 @@ export default {
     },
     handleSuccess(response,file,fileList){
       this.myAdd(response)
-    	this.$emit('imageIds',this.imageId,this.storeName)
     },
     handleExceed(files, fileList){
     	this.$message.error('图片最多上传' + this.$store.state.maxUpload + '张')
