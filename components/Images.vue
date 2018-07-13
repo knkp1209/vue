@@ -4,13 +4,13 @@
 		  action="/api/index/index/upload"
 		  list-type="picture-card"
 		  drag
-		  :limit="maxUpload"
+		  :limit="max_upload"
 		  :on-preview="handlePictureCardPreview"
 		  :on-remove="handleRemove"
 		  :on-success="handleSuccess"
 		  :on-exceed="handleExceed"
 		  :before-upload="handleBeforeUpload"
-		  multiple>
+		  :multiple ="multiple">
 		  <i class="el-icon-upload"></i>
 		  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 		</el-upload>
@@ -32,7 +32,16 @@ export default {
 	props: {
 	  imageId: { // 父组件的定义数据对象
 	    required: true
-	  }
+	  },
+    multiple: {
+      required: true
+    },
+    max_size: {
+      required: true
+    },
+    max_upload: {
+      required: true
+    }
 	},
 	methods: {
     handleRemove(file, fileList) {
@@ -46,13 +55,13 @@ export default {
       this.myAdd(response)
     },
     handleExceed(files, fileList){
-    	this.$message.error('图片最多上传' + this.$store.state.maxUpload + '张')
+    	this.$message.error('图片最多上传' + this.max_upload + '张')
     },
     handleBeforeUpload(file){
-      const isLt2M = file.size / 1024 / 1024 <= this.$store.state.maxSize;
+      const isLt2M = file.size / 1024 / 1024 <= this.max_size;
 
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
+        this.$message.error('上传图片大小不能超过' +  this.max_size + 'MB!');
       }
       return isLt2M;
     },
@@ -77,11 +86,6 @@ export default {
       if (index > -1) {
         this.imageId.splice(index,1);
       }
-    }
-  },
-  computed: {
-    maxUpload () {
-      return this.$store.state.maxUpload;
     }
   }
 }
