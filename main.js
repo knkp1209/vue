@@ -12,6 +12,10 @@ import store from './vuex/store'
 import MenuUtils from '@/lib/MenuUtils'
 import VeeValidate, { Validator } from 'vee-validate'
 import zh_CN from 'vee-validate/dist/locale/zh_CN'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 import App from './App'
 
 
@@ -20,6 +24,7 @@ Vue.prototype.$ajax = axios
 Vue.prototype.base_url = '/api'
 
 Vue.use(VueRouter)
+Vue.use(VueQuillEditor, /* { default global options } */)
 
 const router = new VueRouter({
 	mode: 'history',
