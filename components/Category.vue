@@ -86,6 +86,7 @@ export default {
                 });
                 if (result.id) {
                     _this.$emit('emit_update', result);
+                    _this.options.push(result);
                 }
             }).catch(function(err) {
                 _this.pid = '';
