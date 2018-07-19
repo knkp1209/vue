@@ -56,6 +56,12 @@ a:hover {
 
 .my_err {
   color: red;
+  font-size: 14px;
+}
+
+.my_tip {
+  color: #38B0DE;
+  font-size: 14px;
 }
 
 </style>
