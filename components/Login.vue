@@ -31,6 +31,7 @@ var handler = function (captchaObj) {
         //加载完毕执行
     });
 };
+
 $.ajax({
    url: "/api/geetest.html?t=" + (new Date()).getTime(),
    type: "get",
@@ -82,7 +83,7 @@ export default {
 					  	},
 					  　dataType: 'json',
 				      	method: 'post',
-				      	url: this.base_url + '/index',
+				      	url: this.base_url + '/admin/login',
 					})
 					.then(function(res){
 						let {msg,result} = res.data
@@ -90,18 +91,32 @@ export default {
 						window.sessionStorage.setItem('permission',JSON.stringify(result.permission))
 						MenuUtils(routers,result.permission)
 						_this.$router.addRoutes(routers)
-						_this.$router.push({ path: '/main' });
 						window.sessionStorage.setItem('MmaxUpload',JSON.stringify(result.max_upload))
 						window.sessionStorage.setItem('MmaxSize',JSON.stringify(result.max_size))
 						_this.$store.commit('MmaxUpload',result.max_upload)
 						_this.$store.commit('MmaxSize',result.max_size)
+						_this.$router.push({ path: '/main' });
 					})
 					.catch(function(err){
-						console.log(err)
+						_this.$message.error(err.response.data.msg);
+						$("#captcha").empty();
+						$.ajax({
+						   url: "/api/geetest.html?t=" + (new Date()).getTime(),
+						   type: "get",
+						   dataType: "json",
+						   success: function (data) {
+						   initGeetest({
+						        gt: data.gt,
+						        challenge: data.challenge,
+						        product: "float",
+						        offline: !data.success
+						      }, handler);
+						   }
+						});
 					})
 	          	} else {
 	          		if (!gs || !gv || !gc) {
-	          			alert('请完成滑动验证！');
+	          			this.$message.error('请完成滑动验证！');
 	          		}
 	          		console.log('Not pass valid');
 	            	return false;
