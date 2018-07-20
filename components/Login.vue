@@ -12,7 +12,7 @@
 				<div class="login box" id="captcha" ></div>
 				<el-input class="login" v-model="form.sha_password" type="hidden"></el-input>
 				<el-form-item>
-					<el-button class="login" @click="login('form')" size="small" type="primary">登录</el-button>
+					<el-button class="login" @click="login('form')" size="small" type="primary" :loading="loading">登录</el-button>
 				</el-form-item>
 			</el-form>
 		</el-row>
@@ -51,7 +51,7 @@ export default {
 	name: 'Login',
 	data() {
 		return {
-			author: this.$store.state.author,
+			loading:false,
 			form: {
 				email: '',
 				password: '',
@@ -64,7 +64,7 @@ export default {
 				password:[
 					{ required: true, message: '请输入密码', trigger: 'blur' }
 				],
-			}
+			},
 		}
 	},
 	methods: {
@@ -72,6 +72,7 @@ export default {
 			this.$refs[formName].validate((valid) => {
 				let [gs,gv,gc] = [$("input[name='geetest_seccode']").val(), $("input[name='geetest_validate']").val(), $("input[name='geetest_challenge']").val()];
 	          	if (valid && gs && gv && gc) {
+	          		this.loading = true;
 	          		let _this = this;
 	          		this.$ajax({
 				      	data:{
@@ -99,6 +100,7 @@ export default {
 					})
 					.catch(function(err){
 						_this.$message.error(err.response.data.msg);
+						_this.loading = false;
 						$("#captcha").empty();
 						$.ajax({
 						   url: "/api/geetest.html?t=" + (new Date()).getTime(),
