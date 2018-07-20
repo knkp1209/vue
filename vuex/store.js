@@ -9,6 +9,7 @@ const store = new Vuex.Store({
     loading: true,
     maxUpload: 5, // 默认 5张 最大文件上传数
     maxSize:   2, // 默认 2M 单个文件最大值（M为单位)
+    activeGoodsTabs: 'first', // 激活的商品标签页
   },
   mutations: {
   	Mloading (state,bool){
@@ -19,7 +20,10 @@ const store = new Vuex.Store({
   	},
   	MmaxSize (state,number){
   		state.maxSize = number
-  	}
+  	},
+    MactiveGoodsTabs (state,string){
+      state.activeGoodsTabs = string
+    }
   }
 })
 
