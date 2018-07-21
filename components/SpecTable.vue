@@ -14,42 +14,42 @@
             </el-table-column>
             <el-table-column width="120" label="库存">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'库存','stock')" :name="'stock_' + scope.$index" v-validate="'required|numeric|min_value:0|max_value:99999999'" v-model="post_data[scope.$index].stock" placeholder="库存 (必填)"></el-input>
+                    <el-input @input.native="check($event,'库存','stock')" :name="'stock_' + scope.$index " v-validate="'required|numeric|min_value:0|max_value:99999999'" v-model="post_data[table_data[scope.$index]['index']].stock" placeholder="库存 (必填)"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="150" label="销售价">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'销售价','sell_price')" v-validate="'required|decimal:2|min_value:0|max_value:99999999'" :name="'sell_price' + scope.$index" v-model="post_data[scope.$index].sell_price" placeholder="销售价 (必填)"></el-input>
+                    <el-input @input.native="check($event,'销售价','sell_price')" v-validate="'required|decimal:2|min_value:0|max_value:99999999'" :name="'sell_price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].sell_price" placeholder="销售价 (必填)"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="150" label="原价" select-on-indeterminate>
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'原价','price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'price' + scope.$index" v-model="post_data[scope.$index].price" placeholder="原价"></el-input>
+                    <el-input @input.native="check($event,'原价','price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].price" placeholder="原价"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="150" label="成本价">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'成本价','cost_price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'cost_price' + scope.$index" v-model="post_data[scope.$index].cost_price" placeholder="成本价"></el-input>
+                    <el-input @input.native="check($event,'成本价','cost_price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'cost_price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].cost_price" placeholder="成本价"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="100" label="运费">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'运费','freight')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'freight' + scope.$index" v-model="post_data[scope.$index].freight" placeholder="运费"></el-input>
+                    <el-input @input.native="check($event,'运费','freight')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'freight' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].freight" placeholder="运费"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="100" label="重量">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'重量','weight')" v-validate="'numeric|min_value:0|max_value:99999999'" :name="'weight' + scope.$index" v-model="post_data[scope.$index].weight" placeholder="重量"></el-input>
+                    <el-input @input.native="check($event,'重量','weight')" v-validate="'numeric|min_value:0|max_value:99999999'" :name="'weight' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].weight" placeholder="重量"></el-input>
                 </template>
             </el-table-column>
             <el-table-column label="条形码">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'条形码','bar_code')" v-validate="'max:14'" :name="'bar_code' + scope.$index" v-model="post_data[scope.$index].bar_code" placeholder="条形码"></el-input>
+                    <el-input @input.native="check($event,'条形码','bar_code')" v-validate="'max:14'" :name="'bar_code' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].bar_code" placeholder="条形码"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="180" label="货号">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'货号','product_number')" v-validate="'max:14'" :name="'product_number' + scope.$index" v-model="post_data[scope.$index].product_number" placeholder="货号">
+                    <el-input @input.native="check($event,'货号','product_number')" v-validate="'max:14'" :name="'product_number' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].product_number" placeholder="货号">
                     </el-input>
                 </template>
             </el-table-column>
@@ -57,7 +57,7 @@
                 <template slot-scope="scope">
                     <el-button size="text" @click="handleEdit(scope.$index, scope.row)">编辑
                     </el-button>
-                    <el-button size="text" type="danger" @click="deleteRow(scope.$index, table_data)">删除
+                    <el-button size="text" type="danger" @click="deleteRow(scope.$index,table_data[scope.$index]['index'], table_data)">删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -87,9 +87,9 @@ export default {
         handleEdit(index, row) {
             console.log(index, row);
         },
-        deleteRow(index, rows) {
+        deleteRow(index, p_index, rows) {
             rows.splice(index, 1);
-            this.post_data.splice(index, 1);
+            delete this.post_data[p_index];
         },
         manySpec(value) {
             this.post_data = []
@@ -110,7 +110,7 @@ export default {
                 })
                 this.$nextTick(() => {
                     this.table_data = [
-                        []
+                        { index: 0 }
                     ]
                 })
             } else {
@@ -187,7 +187,7 @@ export default {
          */
         creatteIndx(length) {
             for (let i = 0; i < length; i++) {
-                this.table_data[i]['index'] = i;
+                this.$set(this.table_data[i], 'index', i)
             }
         },
         /*
@@ -233,7 +233,7 @@ export default {
                         $("input[name='" + item['field'] + "']").addClass('input_error')
                     })
                     this.$message.error('规格有误')
-                    this.$store.commit('MactiveGoodsTabs','third')
+                    this.$store.commit('MactiveGoodsTabs', 'third')
                 } else {
                     let data = {}
                     // data['spec'] = this.spec_data
