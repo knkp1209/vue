@@ -14,7 +14,7 @@
             </el-table-column>
             <el-table-column width="120" label="库存">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'库存','stock')" :name="'stock_' + scope.$index " v-validate="'required|numeric|min_value:0|max_value:99999999'" v-model="post_data[table_data[scope.$index]['index']].stock" placeholder="库存 (必填)"></el-input>
+                    <el-input @input.native="check($event,'库存','stock')" :name="'stock' + scope.$index " v-validate="'required|numeric|min_value:0|max_value:99999999'" v-model="post_data[table_data[scope.$index]['index']].stock" placeholder="库存 (必填)"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="150" label="销售价">
@@ -203,6 +203,7 @@ export default {
          *   规格信息输入验证
          */
         check(e, tip, name) {
+            let is_error = false;
             this.$validator.validate(e.target.name, e.target.value).then(result => {
                 if (!result) {
                     // do stuff if not valid.
@@ -214,14 +215,38 @@ export default {
                         type: 'error',
                         duration: 1500,
                     });
+                    is_error = true;
                     $(e.target).addClass('input_error')
                 } else {
+                    is_error = false;
                     $(e.target).removeClass('input_error')
                 }
             });
-            this.spec_checked_row.forEach((i) => {
-                this.post_data[i][name] = e.target.value
-            })
+            let indexs = [];
+            let input_name = [];
+            if (!is_error) {
+                if (this.spec_checked_row.length > 0) {
+                    this.table_data.forEach((item) => {
+                        // 由于有删除操作，table_data 的下标（element ui）会改变，所以要把 table_data 里面每一项的index (creatteIndx 生成的) 存起来，后面可以根据index 定位到下标
+                        indexs.push(item.index);
+                    })
+                    this.spec_checked_row.forEach((i) => {
+                        // 选中行的某个输入框
+                        input_name.push(name + indexs.indexOf(i));
+                    });
+                    if (input_name.indexOf(e.target.name) != -1) {
+                        // 在选中行中
+                        input_name.forEach((item) => {
+                            this.$nextTick(() => {
+                                $("input[name='" + item + "']").removeClass('input_error');
+                            })
+                        });
+                        this.spec_checked_row.forEach((i) => {
+                            this.post_data[i][name] = e.target.value
+                        })
+                    }
+                }
+            }
         },
         /*
          *   规格信息全部验证并将规格数据返回给父组件
