@@ -90,6 +90,9 @@ export default {
         deleteRow(index, p_index, rows) {
             rows.splice(index, 1);
             delete this.post_data[p_index];
+            this.$nextTick(() => {
+                $(".input_error").removeClass('input_error')
+            });
         },
         manySpec(value) {
             this.post_data = []
@@ -237,9 +240,11 @@ export default {
                     if (input_name.indexOf(e.target.name) != -1) {
                         // 在选中行中
                         input_name.forEach((item) => {
-                            this.$nextTick(() => {
-                                $("input[name='" + item + "']").removeClass('input_error');
-                            })
+                            if (item != e.target.name) {
+                                this.$nextTick(() => {
+                                    $("input[name='" + item + "']").removeClass('input_error');
+                                })
+                            }
                         });
                         this.spec_checked_row.forEach((i) => {
                             this.post_data[i][name] = e.target.value
