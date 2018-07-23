@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-upload
-		  action="/api/index/index/upload"
+		  :action="base_url + '/admin/upload'"
 		  list-type="picture-card"
 		  drag
 		  :limit="max_upload"
@@ -30,7 +30,7 @@ export default {
     };
   },
 	props: {
-	  imageId: { // 父组件的定义数据对象
+	  imageUrls: { // 父组件的定义数据对象
 	    required: true
 	  },
     multiple: {
@@ -69,22 +69,22 @@ export default {
     *	当前文件列表ID(ID由服务端返回) 废弃
     */
     currentFileList(fileList){
-    	this.imageId = [];
+    	this.imageUrls = [];
     	Object.keys(fileList).forEach((item)=>{
-        this.imageId.push(fileList[item]['response']['result'])
+        this.imageUrls.push(fileList[item]['response']['result'])
     	})
     },
     /*
     * 添加成功上传的图片ID
     */
     myAdd(response) {
-      this.imageId.push(response['result'])
+      this.imageUrls.push(response['result'])
     },
     myDel(file) {
       let val = file['response']['result'];
-      let index = this.imageId.indexOf(val);
+      let index = this.imageUrls.indexOf(val);
       if (index > -1) {
-        this.imageId.splice(index,1);
+        this.imageUrls.splice(index,1);
       }
     }
   }
