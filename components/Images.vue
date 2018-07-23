@@ -58,7 +58,7 @@ export default {
     	this.$message.error('图片最多上传' + this.max_upload + '张')
     },
     handleBeforeUpload(file){
-      const isLt2M = file.size / 1024 / 1024 <= this.max_size;
+      const isLt2M = file.size <= this.max_size * 1024 * 1024;
 
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过' +  this.max_size + 'MB!');
