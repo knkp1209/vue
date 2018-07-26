@@ -45,7 +45,7 @@ export default {
 	    this.$ajax({
 		  　dataType: 'json',
 	      	method: 'get',
-	      	url: this.base_url + '/index/index/area',
+	      	url: this.base_url + '/admin/provinces_cities',
 		})
 		.then(function(res){
 			let {msg,result} = res.data
