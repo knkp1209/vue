@@ -91,7 +91,7 @@ export default {
                         url: _this.base_url + '/admin/upload',
                         data: formData,
                     }).then((res) => {
-                        success(res.data.result) // 返回图片地址
+                        success(_this.base_url + '/public/uploads/' + res.data.result) // 返回图片地址
                     }).catch((err) => {
                        failure('上传失败')
                     })
