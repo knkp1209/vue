@@ -32,12 +32,17 @@
                     <el-input @input.native="check($event,'成本价','cost_price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'cost_price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].cost_price" placeholder="成本价"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column width="100" label="运费">
+            <el-table-column width="100" label="积分">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'运费','freight')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'freight' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].freight" placeholder="运费"></el-input>
+                    <el-input @input.native="check($event,'积分','point')" v-validate="'numeric|min_value:0|max_value:99999999'" :name="'point' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].point" placeholder="积分"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column width="100" label="重量">
+            <el-table-column width="100" label="经验值">
+                <template slot-scope="scope">
+                    <el-input @input.native="check($event,'经验值','exp')" v-validate="'numeric|min_value:0|max_value:99999999'" :name="'exp' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].exp" placeholder="经验值"></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column width="100" label="重量(克)">
                 <template slot-scope="scope">
                     <el-input @input.native="check($event,'重量','weight')" v-validate="'numeric|min_value:0|max_value:99999999'" :name="'weight' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].weight" placeholder="重量"></el-input>
                 </template>
@@ -98,6 +103,7 @@ export default {
             this.post_data = []
             this.spec_names_length = 0;
             this.table_data = [];
+            this.spec_data = {};
             if (value === false) {
                 this.spec_names = {}
                 this.post_data.push({
@@ -106,7 +112,8 @@ export default {
                     sell_price: '',
                     price: '',
                     cost_price: '',
-                    freight: '',
+                    point: '',
+                    exp: '',
                     weight: '',
                     bar_code: '',
                     product_number: '',
@@ -126,7 +133,7 @@ export default {
         createSpecTable(data) {
             this.table_data = []
             this.post_data = []
-            this.spec_data = Object.assign({}, this.spec_data, data)
+            this.spec_data = Object.assign({}, {}, data)
             // 此处由于可能是因为上面赋值问题
             this.$nextTick(() => {
                 this.spec_names = {}
@@ -178,7 +185,8 @@ export default {
                     sell_price: '',
                     price: '',
                     cost_price: '',
-                    freight: '',
+                    point: '',
+                    exp: '',
                     weight: '',
                     bar_code: '',
                     product_number: '',
@@ -266,10 +274,11 @@ export default {
                     this.$store.commit('MactiveGoodsTabs', 'third')
                 } else {
                     let data = {}
-                    // data['spec'] = this.spec_data
-                    // data['products'] = this.post_data
+                    // console.log(this.spec_names);
+                    data['spec_data'] = this.spec_data
+                    data['products'] = this.post_data
                     if (this.table_data.length > 0) {
-                        this.$emit('emit_v_spec', 'spec_table', this.post_data);
+                        this.$emit('emit_v_spec', 'spec_table', data);
                     }
                 }
             })
