@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-upload
+		<el-upload :ref="name"
 		  :action="base_url + '/admin/upload'"
 		  list-type="picture-card"
 		  drag
@@ -41,11 +41,15 @@ export default {
     },
     max_upload: {
       required: true
+    },
+    name: {
+      required: true //
     }
 	},
 	methods: {
     handleRemove(file, fileList) {
       this.myDel(file)
+      this.$refs[this.name].$el.children[1].style.display = 'inline-block';
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -53,6 +57,9 @@ export default {
     },
     handleSuccess(response,file,fileList){
       this.myAdd(response)
+      if (fileList.length == this.max_upload){
+        this.$refs[this.name].$el.children[1].style.display = 'none';
+      }
     },
     handleExceed(files, fileList){
     	this.$message.error('图片最多上传' + this.max_upload + '张')
@@ -86,7 +93,7 @@ export default {
       if (index > -1) {
         this.imageUrls.splice(index,1);
       }
-    }
+    },
   }
 }
 </script>
