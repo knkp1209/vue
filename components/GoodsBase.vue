@@ -11,6 +11,14 @@
             </el-row>
             <el-row type="flex" justify="left">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                    <el-form-item label="单位">
+                        <el-input v-model="unit" name="unit" v-validate="'max:10'" placeholder="计件单位。如:件,箱,个"></el-input>
+                        <i class="my_err" v-show="errors.has('name')">{{errors.first('unit')}}</i>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row type="flex" justify="left">
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item label="排序">
                         <el-input v-model="sort" name="sort" v-validate="'numeric|min_value:0|max_value:99999999'" placeholder="填写的数字越大，排序越靠前"></el-input>
                         <i class="my_err" v-show="errors.has('sort')">{{errors.first('sort')}}</i>
@@ -84,6 +92,7 @@ export default {
         return {
             name: '',
             sort: '',
+            unit: '',
             is_shelf: true,
             promise: [],
             mark: [],
@@ -143,11 +152,12 @@ export default {
             this.$validator.validateAll().then(result => {
                 if (!result) {
                     this.$message.error('基本信息有误')
-                    this.$store.commit('MactiveGoodsTabs','first')
+                    this.$store.commit('MactiveGoodsTabs', 'first')
                 } else {
                     let data = {}
                     data['name'] = this.name;
                     data['sort'] = this.sort;
+                    data['unit'] = this.unit;
                     data['is_shelf'] = this.is_shelf;
                     data['mark'] = this.mark;
                     data['promise'] = this.promise;
