@@ -103,7 +103,7 @@ export default {
 						_this.loading = false;
 						$("#captcha").empty();
 						$.ajax({
-						   url: _this.base_url + "geetest.html?t=" + (new Date()).getTime(),
+						   url: _this.base_url + "/geetest.html?t=" + (new Date()).getTime(),
 						   type: "get",
 						   dataType: "json",
 						   success: function (data) {
