@@ -10,6 +10,8 @@ const store = new Vuex.Store({
     maxUpload: 5, // 默认 5张 最大文件上传数
     maxSize:   2, // 默认 2M 单个文件最大值（M为单位)
     activeGoodsTabs: 'first', // 激活的商品标签页
+    topCategoryList: [], // 顶级分类列表
+    visibleCategory: false, // 分类添加功能是否打开
   },
   mutations: {
   	Mloading (state,bool){
@@ -23,6 +25,12 @@ const store = new Vuex.Store({
   	},
     MactiveGoodsTabs (state,string){
       state.activeGoodsTabs = string
+    },
+    MtopCategoryList (state,arr){
+      state.topCategoryList = arr
+    },
+    MvisibleCategory (state,bool) {
+      state.visibleCategory = bool
     }
   }
 })

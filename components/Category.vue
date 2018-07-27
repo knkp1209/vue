@@ -1,7 +1,6 @@
 <template>
     <div>
-        <el-button size="mini" type="primary" @click="dialog_add_category_visible = true">添加分类</el-button>
-        <el-dialog width="550px" title="添加分类" center :visible.sync="dialog_add_category_visible">
+        <el-dialog width="550px" title="添加分类" center :visible.sync="$store.state.visibleCategory">
             <el-form label-position="right" label-width="80px">
                 <el-row type="flex" justify="center">
                     <el-form-item label="父级分类">
@@ -19,6 +18,13 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
+                <el-row type="flex" justify="center">
+                    <el-col :span="13">
+                        <el-form-item label="图片">
+                            <images key="category" name="category" :imageUrls="img_url" :multiple="false" :max_size="$store.state.maxSize" :max_upload="1"></images>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
                 <el-form-item label="提示">
                     <span class="my_tip">父级分类可不选，不选父级分类时，添加的分类为最高顶级分类</span>
                 </el-form-item>
@@ -31,72 +37,100 @@
     </div>
 </template>
 <script>
+import Images from '@/components/Images'
 export default {
     name: 'Category',
     data() {
         return {
+            img_url: [],
             name: '',
-            dialog_add_category_visible: false,
             add_category_loading: false,
-            options: [],
             pid: '',
         }
     },
+    computed: {
+        options() {
+            return this.$store.state.topCategoryList
+        }
+    },
+    components: { Images },
     created() {
-        let _this = this
-        this.$ajax({
-            dataType: 'json',
-            method: 'get',
-            url: this.base_url + '/index/index/category',
-        }).then(function(res) {
-            let { msg, result } = res.data
-            _this.options = result
-        }).catch(function(err) {
-            console.log(err)
-            alert('页面异常，请手动刷新页面，按 F5 ')
-        })
+        if (this.options.length == 0) {
+            this.init();
+        }
     },
     methods: {
-        post() {
-            this.add_category_loading = true;
-            let _this = this;
-            let data = {};
-            if (this.pid == '') {
-                data.pid = 0;
-            } else {
-                data.pid = this.pid;
-            }
-            data.name = this.name;
-            console.log(data);
+        init() {
+            let _this = this
             this.$ajax({
                 dataType: 'json',
-                method: 'post',
-                url: this.base_url + '/index/index/add_category',
-                data: data
+                method: 'get',
+                url: this.base_url + '/admin/categorys',
             }).then(function(res) {
-                _this.dialog_add_category_visible = false;
-                _this.add_category_loading = false;
-                _this.pid = '';
-                _this.name = '';
                 let { msg, result } = res.data
-                // _this.options = result
-                _this.$message({
-                    message: msg,
-                    type: 'success'
-                });
-                if (result.id) {
-                    _this.$emit('emit_update', result);
-                    _this.options.push(result);
-                }
+                _this.$store.commit('MtopCategoryList', result)
             }).catch(function(err) {
-                _this.pid = '';
-                _this.name = '';
                 console.log(err)
                 alert('页面异常，请手动刷新页面，按 F5 ')
             })
         },
+        post() {
+            this.$validator.validateAll().then(result => {
+                if (result) {
+                    this.add_category_loading = true;
+                    let _this = this;
+                    let data = {};
+                    if (this.pid == '') {
+                        data.pid = 0;
+                    } else {
+                        data.pid = this.pid;
+                    }
+                    data.name = this.name;
+                    data.url = (this.img_url[0] == undefined) ? '' : this.img_url[0],
+                        this.$ajax({
+                            dataType: 'json',
+                            method: 'post',
+                            url: this.base_url + '/admin/categorys',
+                            data: data
+                        }).then(function(res) {
+                            _this.$store.commit('MvisibleCategory', false)
+                            _this.add_category_loading = false;
+                            _this.pid = '';
+                            _this.name = '';
+                            let { msg, result } = res.data
+                            _this.$message({
+                                message: msg,
+                                type: 'success'
+                            });
+                            if (data.pid == 0) {
+                                _this.options.push(result);
+                            } else {
+                                for (var i = 0; i < _this.options.length; i++) {
+                                    if (_this.options[i].id == data.pid) {
+                                        if(_this.options[i].children === undefined) {
+                                            _this.options[i].children = [];
+                                        }
+                                        _this.options[i].children.push(result);
+                                        break;
+                                    }
+                                }
+                            }
+                        }).catch(function(err) {
+                            console.log(err)
+                            _this.pid = '';
+                            _this.name = '';
+                            _this.$store.commit('MvisibleCategory', false)
+                            _this.$message({
+                                message: '添加失败',
+                                type: 'error'
+                            });
+                        })
+                }
+            })
+
+        },
         cancel() {
-            this.dialog_add_category_visible = false;
+            this.$store.commit('MvisibleCategory', false)
             this.pid = '';
             this.name = '';
         }

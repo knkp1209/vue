@@ -2,7 +2,7 @@
     <div>
         <el-form label-width="80px">
             <el-row type="flex" justify="left">
-                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                <el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
                     <el-form-item label="名称">
                         <el-input v-model="name" name="name" v-validate="'required|max:200'" placeholder="商品名称 (必填)"></el-input>
                         <i class="my_err" v-show="errors.has('name')">{{errors.first('name')}}</i>
@@ -10,7 +10,7 @@
                 </el-col>
             </el-row>
             <el-row type="flex" justify="left">
-                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                <el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
                     <el-form-item label="单位">
                         <el-input v-model="unit" name="unit" v-validate="'max:10'" placeholder="计件单位。如:件,箱,个"></el-input>
                         <i class="my_err" v-show="errors.has('name')">{{errors.first('unit')}}</i>
@@ -18,7 +18,7 @@
                 </el-col>
             </el-row>
             <el-row type="flex" justify="left">
-                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                <el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
                     <el-form-item label="排序">
                         <el-input v-model="sort" name="sort" v-validate="'numeric|min_value:0|max_value:99999999'" placeholder="填写的数字越大，排序越靠前"></el-input>
                         <i class="my_err" v-show="errors.has('sort')">{{errors.first('sort')}}</i>
@@ -28,7 +28,7 @@
             <el-row type="flex" justify="left">
                 <el-form-item label="分类">
                     <div>
-                        <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                        <el-col :xs="24" :sm="20" :md="16" :lg="14" :xl="18">
                             <el-row type="flex" :gutter="10">
                                 <el-col :span="11">
                                     <el-select v-model="cat_id" filterable multiple style="width: 100%;" placeholder="请选择" @change="getSub">
@@ -43,7 +43,10 @@
                                     </el-select>
                                 </el-col>
                                 <el-col :span="1">
-                                    <category @emit_update="updateOption"></category>
+                                    <el-button size="mini" type="primary" @click="$store.commit('MvisibleCategory',true)">添加分类</el-button>
+                                    <template v-if="$store.state.visibleCategory">
+                                        <category></category>
+                                    </template>
                                 </el-col>
                             </el-row>
                         </el-col>
@@ -85,7 +88,7 @@
 <script>
 import Tag from '@/components/Tag'
 import DynamicInput from '@/components/DynamicInput'
-import Category from '@/components/Category'
+// import Category from '@/components/Category'
 export default {
     name: 'GoodsBase',
     data() {
@@ -97,7 +100,7 @@ export default {
             promise: [],
             mark: [],
             parameters: [],
-            options: [],
+            // options: [],
             options_sub: [],
             cat_id: [],
             sub_cat_id: []
@@ -106,29 +109,24 @@ export default {
     created() {
         this.getOption()
     },
-    components: { Tag, DynamicInput, Category },
+    computed: {
+        options () {
+            return this.$store.state.topCategoryList
+        }
+    },
+    components: { Tag, DynamicInput, 'category': () => import('@/components/Category')},
     methods: {
         getSub(val) {
-            let _this = this
-            if (val.length == 0) {
-                this.options_sub = []
-                return false;
-            }
-            // console.log(this.$ajax);
-            this.$ajax({
-                dataType: '',
-                method: 'get',
-                url: this.base_url + '/index/index/category_sub',
-                params: {
-                    ids: val
+            this.options_sub = [];
+            val.forEach((id) => {
+                for(var i = 0; i < this.options.length; i++) {
+                    if (this.options[i].id  == id) {
+                        if (this.options[i].children !== undefined ) {
+                            this.options_sub.push.apply(this.options_sub,this.options[i].children);
+                        }
+                        break;
+                    }
                 }
-            }).then(function(res) {
-                let { msg, result } = res.data
-                _this.options_sub = result
-            }).catch(function(err) {
-                console.log(err)
-                _this.options_sub = []
-                alert('页面异常，请手动刷新页面，按 F5 ')
             })
         },
         getOption() {
@@ -136,17 +134,14 @@ export default {
             this.$ajax({
                 dataType: 'json',
                 method: 'get',
-                url: this.base_url + '/index/index/category',
+                url: this.base_url + '/admin/categorys',
             }).then(function(res) {
                 let { msg, result } = res.data
-                _this.options = result
+                _this.$store.commit('MtopCategoryList', result)
             }).catch(function(err) {
                 console.log(err)
                 alert('页面异常，请手动刷新页面，按 F5 ')
             })
-        },
-        updateOption(obj) {
-            this.options.push(obj)
         },
         checkAll() {
             this.$validator.validateAll().then(result => {
