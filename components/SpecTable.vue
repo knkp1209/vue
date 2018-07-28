@@ -4,7 +4,7 @@
         <template v-if="unified">
             <Spec @e_spec_list="createSpecTable"></Spec>
         </template>
-        <el-table :data="table_data" :max-height="700" stripe @selection-change="handleSelectionChange" ref="spec_table">
+        <el-table :data="table_data" :max-height="700" stripe @selection-change="handleSelectionChange" ref="spec_table" v-loading="creating">
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column width="100" fixed :label="item" :key="index" v-for="(item,index) in spec_names">
@@ -71,6 +71,8 @@
 </template>
 <script>
 import Spec from '@/components/Spec'
+var t_b = [];
+var s_n = {};
 export default {
     name: 'SpecTable',
     data() {
@@ -78,10 +80,10 @@ export default {
             unified: false,
             table_data: [],
             spec_names: {},
-            spec_names_length: 0,
             post_data: [],
             spec_checked_row: [],
             spec_data: {},
+            creating:false,
         };
     },
     components: { Spec },
@@ -101,7 +103,6 @@ export default {
         },
         manySpec(value) {
             this.post_data = []
-            this.spec_names_length = 0;
             this.table_data = [];
             this.spec_data = {};
             if (value === false) {
@@ -127,49 +128,72 @@ export default {
                 this.table_data = []
             }
         },
+        /**
+         *  分包
+        */
+        chunk(array,process,i){
+            let data_key = Object.keys(array)
+            var len = data_key.length; //这里要注意在执行过程中数组最好是不变的
+            setTimeout(() => {
+                process( array[data_key[i]],data_key[i],i++); //循环体要做的操作
+                if(i < len ){
+                    setTimeout(() => {
+                        this.chunk(array,process,i)
+                    },50)
+                }else{
+                    this.spec_names = Object.assign({}, this.spec_names, s_n);
+                    this.table_data = t_b;
+                    s_n = [];
+                    t_b = [];
+                    this.createSpuListStorage(this.table_data.length)
+                    this.creatteIndx(this.table_data.length)
+                    this.creating = false;
+                }
+            })
+        },
+        /**
+         *  生成规格表格的核心
+        */
+        core(data,key,index){
+            s_n[key] = data.name
+            let values = data.values
+            let big_temp = [];
+            if (index == 0) {
+                Object.keys(values).forEach((v_key, v_index) => {
+                    t_b.push({
+                        [key]: values[v_key]
+                    })
+                })
+            } else {
+                t_b.forEach((item) => {
+                    Object.keys(values).forEach((v_key, v_index) => {
+                        let temp = {}
+                        temp = Object.assign({}, temp, item)
+                        temp[key] = values[v_key]
+                        big_temp.push(temp);
+                    })
+                })
+                t_b = big_temp;
+            }
+        },
         /*
          *   生成规格表格
          */
         createSpecTable(data) {
+            this.creating = true;
             this.table_data = []
             this.post_data = []
             this.spec_data = Object.assign({}, {}, data)
-            // 此处由于可能是因为上面赋值问题
-            this.$nextTick(() => {
-                this.spec_names = {}
-                let values = {}
-                let data_key = Object.keys(data)
-                if (data_key.length > 3) {
-                    this.$message.error('规格不能超过3个,请重新选择！');
-                    return false;
-                }
-                data_key.forEach((key, index) => {
-                    this.spec_names[key] = data[key].name
-                    this.spec_names = Object.assign({}, this.spec_names, this.spec_names)
-                    values = data[key].values
-                    let big_temp = [];
-                    if (index == 0) {
-                        Object.keys(values).forEach((v_key, v_index) => {
-                            this.table_data.push({
-                                [key]: values[v_key]
-                            })
-                        })
-                    } else {
-                        this.table_data.forEach((item) => {
-                            Object.keys(values).forEach((v_key, v_index) => {
-                                let temp = {}
-                                temp = Object.assign({}, temp, item)
-                                temp[key] = values[v_key]
-                                big_temp.push(temp);
-                            })
-                        })
-                        this.table_data = big_temp;
-                    }
-                })
-                this.createSpuListStorage(this.table_data.length)
-                this.creatteIndx(this.table_data.length)
-            }, 0);
+            this.spec_names = {}
+            let values = {}
+            let data_key = Object.keys(data)
+            if (data_key.length > 3) {
+                this.$message.error('规格不能超过3个,请重新选择！');
+                return false;
+            }
+            this.chunk(data,this.core,0)
         },
+
         /*
          *   创建单品列表的信息容器
          */
