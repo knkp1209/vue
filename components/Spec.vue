@@ -34,6 +34,7 @@
                 </el-form-item>
                 <el-form-item label="规格值" :key="index" v-for="(item,index) in spec_values">
                     <el-input v-model="spec_values[index]" placeholder="示例：红色"></el-input>
+                    <el-button type="primary" size="mini" @click.prevent="removeValue(index)">删除</el-button>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" v-loading="add_spec_loading">
@@ -76,7 +77,7 @@ export default {
             this.$ajax({
                 dataType: 'json',
                 method: 'get',
-                url: this.base_url + '/index/index/spec',
+                url: this.base_url + '/admin/specs',
             }).then(function(res) {
                 let { msg, result } = res.data
                 _this.spec_list = result
@@ -92,41 +93,42 @@ export default {
          */
         post(is_delete = false) {
             this.add_spec_loading = true
-            var url = ''
-            var data = {}
+            var method = 'post' // 默认新建请求
+            var url = this.base_url + '/admin/specs';
+            var data = {
+                name: this.spec_name,
+                values: this.spec_values,
+            }
+            // 有ID先设置为修改请求
+            if (this.spec_id !== false) {
+                method = 'put'
+                url = url + '/' + this.spec_id
+            }
+            // 是删除改为删除请求
             if (is_delete === true) {
-                url = this.base_url + '/index/index/delete'
-                data = {
-                    id: this.spec_id
-                }
-            } else if (this.spec_id === false) {
-                url = this.base_url + '/index/index/add'
-                data = {
-                    name: this.spec_name,
-                    values: this.spec_values
-                }
-            } else {
-                url = this.base_url + '/index/index/edit'
-                data = {
-                    name: this.spec_name,
-                    values: this.spec_values,
-                    id: this.spec_id
-                }
+                method = 'delete'
+                data = {}
             }
             let _this = this;
             this.$ajax({　
                 dataType: 'json',
-                method: 'post',
+                method: method,
                 url: url,
                 data: data
             }).then(function(res) {
                 let { msg, result } = res.data
                 _this.dialog_add_spec_visible = false
                 _this.add_spec_loading = false
-                _this.getSepcList()
+                if (is_delete === true) {
+                    delete _this.spec_list[_this.spec_id]
+                } else {
+                    _this.spec_list = result
+                    _this.creatCheckboxGroup()
+                }
             }).catch(function(err) {
-                console.log(err)
-                alert('页面异常，请手动刷新页面，按 F5 ')
+                _this.$message.error(err.response.data.msg);
+                _this.dialog_add_spec_visible = false
+                _this.add_spec_loading = false
             })
         },
         /*
@@ -175,6 +177,12 @@ export default {
         addSpecValue() {
             this.spec_values.push('');
         },
+        /**
+         *  删除规格值
+         */
+        removeValue(index) {
+            this.spec_values.splice(index, 1);
+        },
         /*
          *   规格列表多选组初始化
          */
@@ -214,6 +222,10 @@ export default {
          *   将选中的规格整理输出给调用组件
          */
         out() {
+            if (this.dialog_spec_visible == false) {
+                return false; // 防止用户多次点击
+            }
+            this.dialog_spec_visible = false
             let values = {};
             this.return_spec_list = [];
             Object.keys(this.check_list).forEach((key) => {
@@ -227,8 +239,7 @@ export default {
                     this.return_spec_list[key].values = values
                 }
             })
-            this.$emit('e_spec_list', this.return_spec_list);
-            this.dialog_spec_visible = false
+            this.$emit('e_spec_list', this.return_spec_list)
         }
     }
 }
