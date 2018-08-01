@@ -70,11 +70,11 @@
     </div>
 </template>
 <script>
-import Spec from '@/components/Spec'
+import Spec from '@/components/Goods/Spec'
 var t_b = [];
 var s_n = {};
 export default {
-    name: 'SpecTable',
+    name: 'Goods_SpecTable',
     data() {
         return {
             unified: false,

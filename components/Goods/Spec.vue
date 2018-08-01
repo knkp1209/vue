@@ -46,7 +46,7 @@
 </template>
 <script>
 export default {
-    name: 'Spec',
+    name: 'Goods_Spec',
     data() {
         return {
             spec_name: '', // 规格名称

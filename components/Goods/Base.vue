@@ -90,7 +90,7 @@ import Tag from '@/components/Tag'
 import DynamicInput from '@/components/DynamicInput'
 // import Category from '@/components/Category'
 export default {
-    name: 'GoodsBase',
+    name: 'Goods_Base',
     data() {
         return {
             name: '',

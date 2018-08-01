@@ -44,12 +44,12 @@
 </template>
 <script>
 import Images from '@/components/Images'
-import SpecTable from '@/components/SpecTable'
-import GoodsBase from '@/components/GoodsBase'
+import SpecTable from '@/components/Goods/SpecTable'
+import GoodsBase from '@/components/Goods/Base'
 // import RichText from '@/components/RichText'
 import editor from '@/components/editor'
 export default {
-	name: 'Main',
+	name: 'Goods_Editor',
 	data() {
 		return {
 			img_url: [],

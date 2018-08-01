@@ -96,9 +96,10 @@ export default {
 						window.sessionStorage.setItem('MmaxSize',JSON.stringify(result.max_size))
 						_this.$store.commit('MmaxUpload',result.max_upload)
 						_this.$store.commit('MmaxSize',result.max_size)
-						_this.$router.push({ path: '/main' });
+						_this.$router.push({ path: '/home' });
 					})
 					.catch(function(err){
+						console.log(err);
 						_this.$message.error(err.response.data.msg);
 						_this.loading = false;
 						$("#captcha").empty();
