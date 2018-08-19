@@ -1,9 +1,12 @@
 <template>
     <div>
         <el-switch class="s_spec" v-model="unified" active-text="多规格" inactive-text="统一规格" @change="manySpec"></el-switch>
-        <template v-if="unified">
-            <Spec @e_spec_list="createSpecTable"></Spec>
-        </template>
+        <el-button type="primary" size="mini" @click="$store.commit('MdialogSpecVisible', true)">添加规格</el-button>
+        <keep-alive>
+            <template v-if="$store.state.dialogSpecVisible">
+                    <Spec @e_spec_list="createSpecTable"></Spec>
+            </template>
+        </keep-alive>
         <el-table :data="table_data" :max-height="700" stripe @selection-change="handleSelectionChange" ref="spec_table" v-loading="creating">
             <el-table-column type="selection" width="55">
             </el-table-column>
@@ -58,11 +61,9 @@
                     </el-input>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="100" fixed="right">
+            <el-table-column label="操作" width="80" fixed="right">
                 <template slot-scope="scope">
-                    <el-button size="text" @click="handleEdit(scope.$index, scope.row)">编辑
-                    </el-button>
-                    <el-button size="text" type="danger" @click="deleteRow(scope.$index,table_data[scope.$index]['index'], table_data)">删除
+                    <el-button size="mini" type="danger" @click="deleteRow(scope.$index,table_data[scope.$index]['index'], table_data)">删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -84,17 +85,67 @@ export default {
             spec_checked_row: [],
             spec_data: {},
             creating:false,
+            open_spec:false, // 打开规格选择窗
         };
+    },
+    props:{
+        specs:{ // 规格名
+            type:Object,
+            // required:true,
+        },
+        products:{ // 货品
+            type:Array,
+            // required:true,
+        }
     },
     components: { Spec },
     created() {
-        this.manySpec(false);
+        if (this.products.length > 0) {
+            this.post_data = this.products;
+            let temp = {}
+            if (this.specs != null) {
+                this.spec_data = this.specs;
+                let spec_names = this.specs;
+                let spec_names_key = [];
+                let temp_spec_names = [];
+                for (let i in spec_names) {
+                    spec_names_key.push(i);
+                    temp[i] = spec_names[i]['name'];
+                }
+                this.spec_names = temp;
+                this.unified = true;
+                let big = [];
+                temp = {};
+                let ii = 0;
+                for (let i = 0; i < this.products.length; i++) {
+                    let spec_value = JSON.parse(this.products[i].spec_value);
+                    ii = 0;
+                    temp = {};
+                    for(let j in spec_value) {
+                        temp[spec_names_key[ii]] = spec_value[j];
+                        ii++;
+                    }
+                    temp['index'] = i;
+                    big.push(temp);
+                }
+                this.table_data = big;
+            } else {
+                console.log('yang');
+                this.post_data = this.products;
+                this.table_data = [
+                    { index: 0 }
+                ];
+                this.unified = false;
+            }
+        } else {
+            this.manySpec(false);
+        }       
     },
     methods: {
-        handleEdit(index, row) {
-            console.log(index, row);
-        },
         deleteRow(index, p_index, rows) {
+            console.log(rows);
+            console.log(index);
+            console.log(p_index);
             rows.splice(index, 1);
             delete this.post_data[p_index];
             this.$nextTick(() => {
@@ -143,6 +194,8 @@ export default {
                 }else{
                     this.spec_names = Object.assign({}, this.spec_names, s_n);
                     this.table_data = t_b;
+                    console.log(this.spec_names);
+                    console.log(this.table_data);
                     s_n = [];
                     t_b = [];
                     this.createSpuListStorage(this.table_data.length)
@@ -201,7 +254,7 @@ export default {
             for (let i = 0; i < length; i++) {
                 let temp = {}
                 Object.keys(this.table_data[i]).forEach((key) => {
-                    temp[this.spec_names[key]] = this.table_data[i][key]
+                    temp[this.spec_names[key]] = this.table_data[i][key];
                 })
                 this.post_data.push({
                     spec_value: JSON.stringify(temp),

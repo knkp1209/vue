@@ -22,6 +22,7 @@ import App from './App'
 Vue.config.productionTip = true
 Vue.prototype.$ajax = axios
 Vue.prototype.base_url = '/api'
+Vue.prototype.resource_url = 'http://localhost/shop/public/uploads/';
 
 Vue.use(VueRouter)
 // Vue.use(VueQuillEditor, /* { default global options } */)

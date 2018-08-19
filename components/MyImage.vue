@@ -1,29 +1,27 @@
 <template>
-  <div>
-    <el-upload :ref="name"
-      :action="base_url + '/admin/upload'"
-      list-type="picture-card"
-      drag
+	<div>
+		<el-upload :ref="name"
+		  :action="base_url + '/admin/upload'"
+		  list-type="picture-card"
+		  drag
       :file-list="fileList"
-      :limit="max_upload"
-      :on-preview="handlePictureCardPreview"
-      :on-remove="handleRemove"
-      :on-success="handleSuccess"
-      :on-exceed="handleExceed"
-      :before-upload="handleBeforeUpload"
-      :multiple ="multiple">
-      <i class="el-icon-upload"></i>
-      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-    </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
-  </div>
+		  :on-preview="handlePictureCardPreview"
+		  :on-remove="handleRemove"
+		  :on-success="handleSuccess"
+		  :on-exceed="handleExceed"
+		  :before-upload="handleBeforeUpload">
+		  <i class="el-icon-upload"></i>
+		  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+		</el-upload>
+		<el-dialog :visible.sync="dialogVisible">
+		  <img width="100%" :src="dialogImageUrl" alt="">
+		</el-dialog>
+	</div>
 </template>
 <script>
 
 export default {
-  name: 'Images',
+	name: 'MyImage',
   data() {
     return {
       dialogImageUrl: '',
@@ -32,27 +30,20 @@ export default {
     };
   },
   created() {
-    let temp = {};
-    for(let i = 0; i < this.imageUrls.length; i++) {
-      temp = {
-        url: this.resource_url  + this.imageUrls[i]['url'],
-        response:{result:this.imageUrls[i]},
-      }
-      this.fileList.push(temp);
-    }
-    if (this.imageUrls.length >= this.max_upload) {
+    if (this.imageUrl != '') {
+      this.fileList.push({
+        url: this.resource_url  + this.imageUrl,
+        response:{result:this.imageUrl},
+      });
       this.$nextTick(() => {
         this.$refs[this.name].$el.children[1].style.display = 'none';
       })
     }
   },
-  props: {
-    imageUrls: { // 父组件的定义数据对象
-      required: true,
-    },
-    multiple: {
-      required: true
-    },
+	props: {
+	  imageUrl: { // 父组件的定义数据对象
+	    required: true,
+	  },
     max_size: {
       required: true
     },
@@ -62,8 +53,8 @@ export default {
     name: {
       required: true //
     }
-  },
-  methods: {
+	},
+	methods: {
     handleRemove(file, fileList) {
       this.myDel(file)
       this.$refs[this.name].$el.children[1].style.display = 'inline-block';
@@ -79,7 +70,7 @@ export default {
       }
     },
     handleExceed(files, fileList){
-      this.$message.error('图片最多上传' + this.max_upload + '张')
+    	this.$message.error('图片最多上传' + this.max_upload + '张')
     },
     handleBeforeUpload(file){
       const isLt2M = file.size <= this.max_size * 1024 * 1024;
@@ -93,14 +84,10 @@ export default {
     * 添加成功上传的图片ID
     */
     myAdd(response) {
-      this.imageUrls.push(response['result'])
+      this.$emit('emit_set_img',response['result']['url']);
     },
     myDel(file) {
-      let val = file['response']['result'];
-      let index = this.imageUrls.indexOf(val);
-      if (index > -1) {
-        this.imageUrls.splice(index,1);
-      }
+      this.$emit('emit_set_img','');
     },
   }
 }
@@ -114,7 +101,7 @@ export default {
   height: 150px !important;
 }
 .el-upload--picture-card{
-  width:auto !important;
-  height:auto !important;
+	width:auto !important;
+	height:auto !important;
 }
 </style>

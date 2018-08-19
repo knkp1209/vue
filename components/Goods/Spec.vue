@@ -1,8 +1,7 @@
 <template>
     <div>
         <div>
-            <el-button type="primary" size="mini" @click="dialog_spec_visible = true">添加规格</el-button>
-            <el-dialog width="700px" title="选择规格" :visible.sync="dialog_spec_visible">
+            <el-dialog width="700px" title="选择规格" :visible.sync="$store.state.dialogSpecVisible">
                 <div v-loading="spec_loading">
                     <p style="display: inline-block; padding: 2px 15px" v-for="(spec,i) in spec_list">
                         <el-checkbox :indeterminate="is_indeterminate[i]" v-model="check_all[i]" @change="(val) => handleCheckAllChange(val,i)">
@@ -20,7 +19,7 @@
                     </p>
                 </div>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialog_spec_visible = false">取 消</el-button>
+                    <el-button @click="$store.commit('MdialogSpecVisible', false)">取 消</el-button>
                     <el-button type="primary" @click="add">添加规格</el-button>
                     <el-button type="success" @click="out">确 定</el-button>
                 </div>
@@ -51,7 +50,6 @@ export default {
         return {
             spec_name: '', // 规格名称
             spec_values: [], // 规格值集
-            dialog_spec_visible: false, // 选择规格多选组开关
             dialog_add_spec_visible: false, // 添加规格开关
             spec_list: {}, // 规格列表，从服务端获取的源数据
             check_list: {}, // 规格列表被选中的值
@@ -222,12 +220,12 @@ export default {
          *   将选中的规格整理输出给调用组件
          */
         out() {
-            if (this.dialog_spec_visible == false) {
+            if (this.$store.state.dialogSpecVisible == false) {
                 return false; // 防止用户多次点击
             }
-            this.dialog_spec_visible = false
+            this.$store.commit('MdialogSpecVisible', false);
             let values = {};
-            this.return_spec_list = [];
+            this.return_spec_list = {};
             Object.keys(this.check_list).forEach((key) => {
                 if (this.check_list[key].length > 0) {
                     values = {};
@@ -239,6 +237,9 @@ export default {
                     this.return_spec_list[key].values = values
                 }
             })
+            if(Object.keys(this.return_spec_list).length === 0 && this.return_spec_list.constructor === Object) {
+                return false;
+            }
             this.$emit('e_spec_list', this.return_spec_list)
         }
     }

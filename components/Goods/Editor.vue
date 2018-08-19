@@ -1,15 +1,15 @@
 <template>
-	<div>
+	<div v-if="!$store.state.loading">
 		<el-tabs v-model="active_name" type="border-card">
 			<el-tab-pane label="商品基本信息" name="first">
-				<goods-base ref="ref_base" @emit_v_base="submit"></goods-base>
+				<goods-base :base="base" ref="ref_base"></goods-base>
 			</el-tab-pane>
 			<el-tab-pane label="商品广告图" name="second">
 				<el-form label-width="100px">
 					<el-row type="flex" justify="left">
 						<el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
 							<el-form-item label="商品主图">
-								<images key="img_url" name="img_url" :imageUrls="img_url" :multiple="false" :max_size="$store.state.maxSize" :max_upload="1"></images>
+								<my-image key="img_url" @emit_set_img="setImgUrl" name="img_url" :imageUrl="img_url"  :max_size="$store.state.maxSize" :max_upload="1"></my-image>
 							</el-form-item>
 						</el-col>
 					</el-row>
@@ -23,7 +23,7 @@
 				</el-form>
 			</el-tab-pane>
 			<el-tab-pane label="商品规格" name="third">
-				<spec-table ref="ref_spec" @emit_v_spec="submit"></spec-table>
+				<spec-table ref="ref_spec" :specs="specs" :products="products"></spec-table>
 			</el-tab-pane>
 			<el-tab-pane label="商品详情" name="fourth">
 				<!-- <rich-text :rt="rt"></rich-text> -->
@@ -34,15 +34,15 @@
 			</el-tab-pane>
 		</el-tabs>
 		<el-form label-width="100px" class="demo-ruleForm goods">
-			<br />
-			<el-form-item>
-				<el-button type="primary" @click="check">添加</el-button>
-				<el-button>重置</el-button>
+			<el-form-item v-loading="button_post">
+				<el-button type="primary" @click="submit">{{button_name}}</el-button>
+				<el-button v-if="id" @click="toNext">查看下一个</el-button>
 			</el-form-item>
 		</el-form>
 	</div>
 </template>
 <script>
+import MyImage from '@/components/MyImage'
 import Images from '@/components/Images'
 import SpecTable from '@/components/Goods/SpecTable'
 import GoodsBase from '@/components/Goods/Base'
@@ -52,19 +52,34 @@ export default {
 	name: 'Goods_Editor',
 	data() {
 		return {
-			img_url: [],
-			banner_img_urls: [],
-			untreated_data: {
-				spec_table: false,
-				base: false,
+			base: {
+	            name: '', // 商品名称
+	            sort: '', // 商品排序
+	            unit: '', // 商品单位
+	            is_shelf: true, // 是否上架
+	            promise: [],
+	            mark: [],
+	            parameters: [],
+	            cat_id: [],
+            	sub_cat_id: [],
+            	pid_cat_id: [],
 			},
-			post_data: {},
-			detail: '我是富文本编辑器的内容',
+			img_url: '',
+			banner_img_urls: [],
+			detail: '',
+			specs:{},
+			products:[],
+			// button 名字 （更新、添加)
+			button_name:'添加',
+			button_post:false,
 			//tinymce的配置信息 参考官方文档 https://www.tinymce.com/docs/configure/integration-and-setup/
 			editorSetting: {
 				height: 400,
 			},
 		}
+	},
+	props: {
+		id: {},
 	},
 	computed: {
 		active_name: {
@@ -74,87 +89,136 @@ export default {
 			set: function() {}
 		}
 	},
-	components: { GoodsBase, Images, SpecTable, editor },
+	components: { GoodsBase, MyImage, Images, SpecTable, editor },
 	created() {
-		this.$store.commit('Mloading', true)
-		let _this = this
-		this.$ajax({　
-				dataType: 'json',
-				method: 'get',
-				url: this.base_url + '/admin/goods',
-			})
-			.then(function(res) {
-				let { msg, result } = res.data
-				_this.name = result
-				_this.$store.commit('Mloading', false)
-			})
-			.catch(function(err) {
-				console.log(err)
-				_this.$store.commit('Mloading', false)
-				alert('页面异常，请手动刷新页面，按 F5 ')
-			})
+		this.fetchData();
+	},
+	watch: {
+		// 如果路由有变化，会再次执行该方法
+    	'$route': 'fetchData'
 	},
 	methods: {
+		fetchData () {
+			if (this.id === undefined){
+				console.log('添加');
+				this.button_name = '添加';
+				this.$store.commit('Mloading', false)
+				return false;
+			}
+			this.button_name = '更新';
+			this.$store.commit('Mloading', true)
+			let _this = this
+			this.$ajax({　
+					dataType: 'json',
+					method: 'get',
+					url: `${this.base_url}/admin/goods/${this.id}`,
+				})
+				.then(function(res) {
+					let { msg, result } = res.data
+					_this.assignment(result);
+					_this.$store.commit('Mloading', false)
+				})
+				.catch(function(err) {
+					console.log(err)
+					_this.$store.commit('Mloading', false)
+					_this.$message.error('没有更多了')
+					_this.$router.push({ path: `/Goods/List` })
+					// alert('页面异常，请手动刷新页面，按 F5 ')
+				})
+		},
 		getDetail (val) {
 			this.detail = val;
 		},
-		check() {
-			if (this.untreated_data['spec_table'] === false) {
-				//返回的是一个vue对象，所以可以直接调用其方法
-				this.$refs.ref_spec.checkAll(); // 去调用子组件的方法
-			}
-			if (this.untreated_data['base'] === false) {
-				this.$refs.ref_base.checkAll();
-			}
+		setImgUrl (val) {
+			this.img_url = val;
 		},
-		submit(name, result) {
-			this.untreated_data[name] = result;
-			if (Object.values(this.untreated_data).indexOf(false) < 0) {
-				this.reduction();
-				this.post();
-				// this.$router.push({ path: '/maina' });
-				console.log('success')
-			} else {
-				console.log('fail')
-			}
-			// console.log(Object.values(this.my_validate).indexOf(true));
+		submit() {
+            this.$refs.ref_base.$validator.validateAll().then(result => {
+                if (!result) {
+                    this.$message.error('基本信息有误')
+                    this.$store.commit('MactiveGoodsTabs', 'first')
+                }else {
+		            this.$refs.ref_spec.$validator.validateAll().then(result => {
+		                if (!result) {
+		                    this.$refs.ref_spec.errors.items.forEach((item, index) => {
+		                        $("input[name='" + item['field'] + "']").addClass('input_error')
+		                    })
+		                    this.$message.error('规格有误')
+		                    this.$store.commit('MactiveGoodsTabs', 'third')
+		                } else {
+				            if(this.$refs.ref_spec.table_data.length <=  0) {
+				            	this.$message.error('规格不能为空')
+		                		return false;
+		                	}
+		                	this.reduction().then((data) => {
+		                		this.post(data);
+		                	});
+		                }
+		            });
+                }
+            });         
 		},
 		reduction() {
-			// let temp = Object.assign({}, {}, this.untreated_data);
-			// console.log(temp)
-			this.post_data = {
-				name: this.untreated_data['base']['name'],
-				unit: this.untreated_data['base']['unit'],
-				shelf: this.untreated_data['base']['is_shelf'],
-				sort: this.untreated_data['base']['sort'],
-				param: this.untreated_data['base']['parameters'],
-				mark: this.untreated_data['base']['mark'],
-				promise: this.untreated_data['base']['promise'],
-				cat_id: this.untreated_data['base']['cat_id'],
-				sub_cat_id: this.untreated_data['base']['sub_cat_id'],
-				spec: this.untreated_data['spec_table'],
+			let post_data = {
+				name: this.base.name,
+				unit: this.base.unit,
+				shelf: this.base.is_shelf,
+				sort: this.base.sort,
+				param: this.base.parameters,
+				mark: this.base.mark,
+				promise: this.base.promise,
+				cat_id: this.base.cat_id,
+				sub_cat_id: this.base.sub_cat_id,
+				specs: this.$refs.ref_spec.spec_data,
+				products: this.$refs.ref_spec.post_data,
 				detail: this.detail,
-				url: (this.img_url[0] == undefined) ? '' : this.img_url[0],
+				url: this.img_url,
 				banner_img_urls: this.banner_img_urls
 			}
-			// console.log(this.post_data);
-			// this.;post_data['']
-			this.untreated_data['spec_table'] = false;
-			this.untreated_data['base'] = false;
+			return Promise.resolve(post_data);
 		},
-		post() {
+		post(data) {
+			this.button_post = true;
+			var method = 'post';
+			var url = this.base_url + '/admin/goods';
+			if (this.id !== undefined){
+				method = 'put';
+				url += '/' + this.id;
+			}
 			this.$ajax({　
 				dataType: 'json',
-				method: 'post',
-				url: this.base_url + '/admin/goods',
-				data: this.post_data
-			}).then(function(res) {
+				method: method,
+				url: url,
+				data: data
+			}).then((res) => {
 				let { msg, result } = res.data
-			}).catch(function(err) {
+				this.$message.success('操作成功')
+				this.button_post = false;
+			}).catch((err) => {
 				console.log(err)
-				alert('页面异常，请手动刷新页面，按 F5 ')
+				this.$message.error('操作失败，请重新操作')
+				this.button_post = false;
 			})
-			console.log(this.post_data);
+		},
+		assignment(result) {
+			this.base.name = result.name;
+	        this.base.sort = result.sort;
+	        this.base.unit = result.unit;
+	        this.base.is_shelf = result.shelf;
+	        this.base.promise = result.promise
+	        this.base.mark = result.mark;
+	        this.base.parameters = result.param;
+	        this.base.cat_id = result.cat_id;
+	        this.base.sub_cat_id = result.sub_cat_id;
+	        this.base.pid_cat_id = result.pid_cat_id; // 用于帮助渲染
+	        this.detail = result.detail;
+	        this.img_url = result.url;
+	        this.banner_img_urls = result.banners;
+	        this.specs = result.specs;
+	        this.products = result.products;
+		},
+		toNext() {
+			this.$router.push({ path: `/Goods/Editor/${parseInt(this.id) + 1}` })
 		}
 	}
 }
@@ -167,8 +231,7 @@ export default {
 }
 
 .goods .el-form-item .el-form-item__content {
-	margin-left: 0px !important;
-	margin-bottom: 10px !important;
+	margin: 10px 0px 10px 0px !important;
 }
 
 </style>

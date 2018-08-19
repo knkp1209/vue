@@ -12,17 +12,18 @@ const store = new Vuex.Store({
     activeGoodsTabs: 'first', // 激活的商品标签页
     topCategoryList: [], // 顶级分类列表
     visibleCategory: false, // 分类添加功能是否打开
+    dialogSpecVisible:false, // 规格选择是否打开
   },
   mutations: {
-  	Mloading (state,bool){
-  		state.loading = bool
-  	},
-  	MmaxUpload (state,number){
-  		state.maxUpload = number
-  	},
-  	MmaxSize (state,number){
-  		state.maxSize = number
-  	},
+    Mloading (state,bool){
+      state.loading = bool
+    },
+    MmaxUpload (state,number){
+      state.maxUpload = number
+    },
+    MmaxSize (state,number){
+      state.maxSize = number
+    },
     MactiveGoodsTabs (state,string){
       state.activeGoodsTabs = string
     },
@@ -31,7 +32,10 @@ const store = new Vuex.Store({
     },
     MvisibleCategory (state,bool) {
       state.visibleCategory = bool
-    }
+    },
+    MdialogSpecVisible (state,bool) {
+      state.dialogSpecVisible = bool
+    },
   }
 })
 
