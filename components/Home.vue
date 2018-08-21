@@ -52,12 +52,12 @@ export default {
       }).then(function(res) {
         window.sessionStorage.removeItem('permission')
         window.sessionStorage.removeItem('user')
-        window.location.href = '/'
+        window.location.href = '/dist'
       }).catch(function(err) {
         _this.$message.error(err.response.data.msg);
         window.sessionStorage.removeItem('permission')
         window.sessionStorage.removeItem('user')
-        window.location.href = '/'
+        window.location.href = '/dist'
       })
     }
   },
