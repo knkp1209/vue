@@ -16,6 +16,7 @@ import zh_CN from 'vee-validate/dist/locale/zh_CN'
 // import 'quill/dist/quill.core.css'
 // import 'quill/dist/quill.snow.css'
 // import 'quill/dist/quill.bubble.css'
+import './assets/icon/iconfont.css'
 import App from './App'
 
 
