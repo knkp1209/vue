@@ -32,20 +32,6 @@ var handler = function (captchaObj) {
     });
 };
 
-$.ajax({
-   url: "/api/geetest.html?t=" + (new Date()).getTime(),
-   type: "get",
-   dataType: "json",
-   success: function (data) {
-   initGeetest({
-        gt: data.gt,
-        challenge: data.challenge,
-        product: "float",
-        offline: !data.success
-      }, handler);
-   }
-});
-
 var routers = []
 export default {
 	name: 'Login',
@@ -66,6 +52,21 @@ export default {
 				],
 			},
 		}
+	},
+	created() {
+		$.ajax({
+		   url: this.base_url + "/geetest.html?t=" + (new Date()).getTime(),
+		   type: "get",
+		   dataType: "json",
+		   success: function (data) {
+		   initGeetest({
+		        gt: data.gt,
+		        challenge: data.challenge,
+		        product: "float",
+		        offline: !data.success
+		      }, handler);
+		   }
+		});
 	},
 	methods: {
 		login(formName) {
