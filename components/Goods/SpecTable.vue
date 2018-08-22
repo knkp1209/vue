@@ -337,28 +337,6 @@ export default {
                     }
                 }
             }
-        },
-        /*
-         *   规格信息全部验证并将规格数据返回给父组件
-         */
-        checkAll() {
-            this.$validator.validateAll().then(result => {
-                if (!result) {
-                    this.errors.items.forEach((item, index) => {
-                        $("input[name='" + item['field'] + "']").addClass('input_error')
-                    })
-                    this.$message.error('规格有误')
-                    this.$store.commit('MactiveGoodsTabs', 'third')
-                } else {
-                    let data = {}
-                    // console.log(this.spec_names);
-                    data['spec_data'] = this.spec_data
-                    data['products'] = this.post_data
-                    if (this.table_data.length > 0) {
-                        this.$emit('emit_v_spec', 'spec_table', data);
-                    }
-                }
-            })
         }
     }
 }
