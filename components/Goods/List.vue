@@ -91,27 +91,28 @@ export default {
 		updateSort(index) {
 			if (this.table_data[index].sort != this.sorts[index]) {
 				this.putData(index,'sort');
-				console.log(this.$refs.goods_list);
-				this.$refs.goods_list.sort('sort','descending');
 			}
 		},
 		updateShelf(index) {
-			this.table_data[index].shelf = !this.table_data[index].shelf
 			this.putData(index,'shelf');
 		},
 		putData(index,name) {
-			let _this = this;
 			let data = {};
 			data[name] = this.table_data[index][name];
 			this.$ajax({
 				method: 'put',
 				url: this.url + '/' + this.table_data[index].id,
 				data:data,
-			}).then(function(res) {
-				_this.$message.success('更新成功');
-			}).catch(function(err){
+			}).then((res) => {
+				if (name == 'sort') {
+					this.$refs.goods_list.sort('sort','descending')
+				} else if (name == 'shelf') {
+					this.table_data[index].shelf = !this.table_data[index].shelf
+				}
+				this.$message.success('更新成功');
+			}).catch((err) => {
 				console.log(err);
-				_this.$message.error('更新失败');
+				this.$message.error('更新失败');
 			})
 		},
 		deleteData(index, row) { // 这里的row还是双向绑定的
