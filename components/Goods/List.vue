@@ -12,7 +12,7 @@
 			</el-table-column>
 			<el-table-column prop="sale" label="销量">
 			</el-table-column>
-			<el-table-column prop="sell_price" label="销售价格" width="100" sortable>
+			<el-table-column prop="sell_price" label="销售价格" width="110" sortable>
 			</el-table-column>
 			<el-table-column prop="sort" label="排序" sortable>
 				<template slot-scope="scope">
@@ -34,17 +34,17 @@
 			</el-table-column>
 			<el-table-column prop="unit" label="单位">
 			</el-table-column>
-			<el-table-column prop="visit" label="浏览次数" width="100" sortable>
+			<el-table-column prop="visit" label="浏览次数" width="110" sortable>
 			</el-table-column>
-			<el-table-column prop="favorite" label="收藏次数" width="100" sortable>
+			<el-table-column prop="favorite" label="收藏次数" width="110" sortable>
 			</el-table-column>
-			<el-table-column prop="grade" label="评价总分" width="100" sortable>
+			<el-table-column prop="grade" label="评价总分" width="110" sortable>
 			</el-table-column>
-			<el-table-column prop="comments" label="评价次数" width="100" sortable>
+			<el-table-column prop="comments" label="评价次数" width="110" sortable>
 			</el-table-column>
-			<el-table-column prop="update_time" label="更新时间" width="100" sortable>
+			<el-table-column prop="update_time" label="更新时间" width="110" sortable>
 			</el-table-column>
-			<el-table-column width="160" label="操作" fixed="right">
+			<el-table-column width="145" label="操作" fixed="right">
 				<template slot-scope="scope">
 					<div  v-loading="!scope.row.id">
 						<el-button size="mini" @click="handleEdit(scope.$index, scope.row)" >编辑</el-button>

@@ -31,6 +31,10 @@ body {
   padding: 0px 0px;
 }
 
+.el-button--mini {
+  padding: 5px 10px;
+}
+
 .header {
   background: #409EFF;
   height: 60px;
