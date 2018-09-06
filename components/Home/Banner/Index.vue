@@ -1,14 +1,12 @@
 <template>
-	<div>
+	<div id="Id_Home_Banner_Index">
 		<el-tabs v-model="active_tab" type="border-card" @tab-click="toList">
 			<el-tab-pane label="广告图列表" name="/Home/Banner/List">
-				<router-view/>
 			</el-tab-pane>
 			<el-tab-pane :label="op_name" name="/Home/Banner/Add">
-				<router-view/>
 			</el-tab-pane>
 		</el-tabs>
-
+		<router-view />
 	</div>
 </template>
 <script>
@@ -34,3 +32,12 @@ export default {
 }
 
 </script>
+<style>
+#Id_Home_Banner_Index .el-tabs--border-card {
+	border: 0px !important;
+}
+#Id_Home_Banner_Index .el-tabs__content {
+	display: none;
+}
+
+</style>
