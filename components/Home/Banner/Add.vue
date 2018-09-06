@@ -1,7 +1,7 @@
 <template>
 	<div>
 
-			        <el-form label-width="80px">
+			        <el-form label-width="80px" class="bg_color">
 			        	<el-row type="flex" justify="left">
 							<el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
 								<el-form-item label="广告图">
@@ -126,7 +126,8 @@ export default {
 				this.$message.success('添加成功')
 				this.button_post = false
 			}).catch((err) => {
-				this.$message.error('添加失败')
+				console.log();
+				this.$message.error('添加失败：' + err.response.data.msg)
 				this.button_post = false
 			})
 		}
@@ -135,5 +136,9 @@ export default {
 
 </script>
 <style>
-
+.bg_color {
+	background: #FFFFFF;
+	padding-top: 15px;
+    padding-bottom: 5px;
+}
 </style>
