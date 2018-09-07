@@ -21,7 +21,7 @@
                 <el-row type="flex" justify="center">
                     <el-col :span="13">
                         <el-form-item label="图片">
-                            <images key="category" name="category" :imageUrls="img_url" :multiple="false" :max_size="$store.state.maxSize" :max_upload="1"></images>
+                            <my-image key="category" name="category" @emit_set_img="setImgUrl" :imageUrl="img_url" :max_size="$store.state.maxSize" :max_upload="1"></my-image>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -37,12 +37,12 @@
     </div>
 </template>
 <script>
-import Images from '@/components/Images'
+import MyImage from '@/components/MyImage'
 export default {
     name: 'Category',
     data() {
         return {
-            img_url: [],
+            img_url: '',
             name: '',
             add_category_loading: false,
             pid: '',
@@ -53,7 +53,7 @@ export default {
             return this.$store.state.topCategoryList
         }
     },
-    components: { Images },
+    components: { MyImage },
     created() {
         if (this.options.length == 0) {
             this.init();
@@ -86,7 +86,7 @@ export default {
                         data.pid = this.pid;
                     }
                     data.name = this.name;
-                    data.url = (this.img_url[0] == undefined) ? '' : this.img_url[0],
+                    data.url = this.img_url
                         this.$ajax({
                             dataType: 'json',
                             method: 'post',
@@ -127,13 +127,15 @@ export default {
                         })
                 }
             })
-
         },
         cancel() {
             this.$store.commit('MvisibleCategory', false)
             this.pid = '';
             this.name = '';
-        }
+        },
+        setImgUrl (val) {
+            this.img_url = val;
+        },
     }
 }
 
