@@ -70,6 +70,13 @@
             </el-row>
             <el-row type="flex" justify="left">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+                    <el-form-item label="服务承诺">
+                        <tag key="promise" :dynamic-tags="base.promise" :tip="'例如：包邮 正品保证 七天退换'"></tag>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row type="flex" justify="left">
+                <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item label="商品卖点">
                         <tag key="mark" :dynamic-tags="base.mark" :tip="'例如：热卖 新品'"></tag>
                     </el-form-item>
@@ -77,9 +84,14 @@
             </el-row>
             <el-row type="flex" justify="left">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-                    <el-form-item label="服务承诺">
-                        <tag key="promise" :dynamic-tags="base.promise" :tip="'例如：包邮 正品保证 七天退换'"></tag>
+                    <el-form-item label="首页卖点">
+                        <tag key="home_mark" :dynamic-tags="home_mark" :tip="'例如：热卖 新品'"></tag>
                     </el-form-item>
+                    <p style="padding-left: 15px;">
+                        首页卖点说明：这里添加的首页卖点，会在首页展示。 例如：在这里添加了一个 “热卖”，那么首页会展示一个 “热卖” 模块，该模块会展示所有卖点为 “热卖” 的商品
+                        <br />
+                        <el-button type="primary" size="mini" @click="submitHome" >保存首页卖点</el-button>
+                    </p>
                 </el-col>
             </el-row>
         </el-form>
@@ -93,7 +105,6 @@ export default {
     name: 'Goods_Base',
     data() {
         return {
-            // options: [],
             options_sub: [],
         }
     },
@@ -114,6 +125,9 @@ export default {
         options () {
             return this.$store.state.topCategoryList
         },
+        home_mark () {
+            return this.$store.state.homeMark
+        }
     },
     components: { Tag, DynamicInput, 'category': () => import('@/components/Category')},
     methods: {
@@ -143,6 +157,22 @@ export default {
             }).catch((err) => {
                 console.log(err)
                 // alert('页面异常，请手动刷新页面，按 F5 ')
+            })
+        },
+        submitHome() {
+            var method = 'post';
+            var data = {goods_mark:this.home_mark}
+            var url = this.base_url + '/admin/app/set';
+            this.$ajax({　
+                dataType: 'json',
+                method: method,
+                url: url,
+                data: data
+            }).then((res) => {
+                this.$message.success('保存首页卖点成功')
+            }).catch((err) => {
+                console.log(err)
+                this.$message.error('保存失败')
             })
         }
     }

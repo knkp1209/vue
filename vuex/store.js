@@ -14,6 +14,7 @@ const store = new Vuex.Store({
     topCategoryList: [], // 顶级分类列表
     visibleCategory: false, // 分类添加功能是否打开
     dialogSpecVisible:false, // 规格选择是否打开
+    homeMark: [], // 首页卖点
   },
   mutations: {
     Mloading (state,bool){
@@ -39,6 +40,9 @@ const store = new Vuex.Store({
     },
     MdialogSpecVisible (state,bool) {
       state.dialogSpecVisible = bool
+    },
+    MhomeMark (state,arr) {
+      state.homeMark = arr
     },
   }
 })
