@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     maxUpload: 5, // 默认 5张 最大文件上传数
     maxSize:   2, // 默认 2M 单个文件最大值（M为单位)
     activeGoodsTabs: 'first', // 激活的商品标签页
+    activeHomeBannerTabs: '/Home/Banner/List', // 激活的首页广告标签页
     topCategoryList: [], // 顶级分类列表
     visibleCategory: false, // 分类添加功能是否打开
     dialogSpecVisible:false, // 规格选择是否打开
@@ -26,6 +27,9 @@ const store = new Vuex.Store({
     },
     MactiveGoodsTabs (state,string){
       state.activeGoodsTabs = string
+    },
+    MactiveHomeBannerTabs (state,string){
+      state.activeHomeBannerTabs = string
     },
     MtopCategoryList (state,arr){
       state.topCategoryList = arr

@@ -76,7 +76,6 @@ export default {
 	data() {
 		return {
 			button_post: false,
-			active_tab: 'first',
 			img_url: '',
 			remark: '',
 			sort: '',
@@ -84,8 +83,30 @@ export default {
 			button_name: '添加',
 		}
 	},
+	created() {
+		this.$store.commit('MactiveHomeBannerTabs', '/Home/Banner/Add');
+		// this.fetchData();
+	},
+	// props: {
+	// 	id: {},
+	// },
+	// watch: {
+	// 	// 如果路由有变化，会再次执行该方法
+ //    	'$route': 'fetchData'
+	// },
 	components: {MyImage},
 	methods: {
+		// fetchData () {
+		// 	if (this.id === undefined){
+		// 		console.log('添加');
+		// 		this.button_name = '添加';
+		// 		// this.$store.commit('Mloading', false)
+		// 		return false;
+		// 	}
+		// 	console.log('更新');
+		// 	this.button_name = '更新';
+		// 	// this.$store.commit('Mloading', true)
+		// },
 		setImgUrl (val) {
 			this.img_url = val;
 		},

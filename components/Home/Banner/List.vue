@@ -54,11 +54,13 @@ export default {
 		}
 	},
 	created() {
+		this.$store.commit('MactiveHomeBannerTabs', '/Home/Banner/List');
 		this.getData();
 	},
 	methods: {
 		handleEdit(index, row) {
-			this.$router.push({ path: `/Home/Banner/Editor/${row.id}` })
+			this.$message.success('功能暂未开放')
+			// this.$router.push({ path: `/Home/Banner/Editor/${row.id}` })
 		},
 		updateSort(index) {
 			if (this.table_data[index].sort != this.sorts[index]) {
@@ -101,9 +103,8 @@ export default {
 				this.$message.success('删除成功');
 				this.table_data.splice(index,1);
 			}).catch((err) => {
-				console.log(err);
-				console.log('server',err.response);
 				this.$message.error('删除失败');
+				row.id = true;
 			})
 		},
 		getData() {
