@@ -14,7 +14,7 @@
     </el-switch>
     <el-container>
       <el-aside :style="{width : asideWitdh}">
-        <el-menu background-color="#0f5a9f" text-color="#fff" active-text-color="#ffd04b" :collapse="isCollapse">
+        <el-menu background-color="#0f5a9f" text-color="#fff" active-text-color="#ffd04b" :collapse="isCollapse" :router="true">
           <menu-tree :nodes="nodes"></menu-tree>
         </el-menu>
       </el-aside>

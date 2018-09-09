@@ -2,7 +2,7 @@
 	<div>
 		<template v-for="(node,index) in nodes" v-if="!node.hidden">
 		  <!-- 无跳转 -->
-	      <el-submenu :index="index+''" v-if="node.leaf  == 0">
+	      <el-submenu :index="node.path" v-if="node.leaf  == 0">
 	        <template slot="title">
 	          <i :class="node.iconCls"></i>{{node.name}}
 	        </template>
@@ -10,19 +10,15 @@
 	      </el-submenu>
 	      <!-- 叶子跳转 -->
 	      <template  v-else-if="node.leaf == 1">
-	      	<router-link :to="node.path">
 		      <el-menu-item :index="node.path">
 		        	<i :class="node.iconCls"></i>{{node.name}}
 		      </el-menu-item>
-		    </router-link>
 	      </template>
 	      <!-- 树跳转 -->
 	      <template  v-else-if="node.leaf == 2">
-	      	<router-link :to="node.path">
 		      <el-menu-item :index="node.path">
 		        	<i :class="node.iconCls"></i>{{node.name}}
 		      </el-menu-item>
-		    </router-link>
 	      </template>
 	    </template>
 	</div>
