@@ -21,7 +21,7 @@
                 <el-row type="flex" justify="center">
                     <el-col :span="13">
                         <el-form-item label="图片">
-                            <my-image key="category" name="category" @emit_set_img="setImgUrl" :imageUrl="img_url" :max_size="$store.state.maxSize" :max_upload="1"></my-image>
+                            <my-image v-if="$store.state.appSet" key="category" name="category" @emit_set_img="setImgUrl" :imageUrl="img_url" :max_size="max_size" :max_upload="1"></my-image>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -39,7 +39,7 @@
 <script>
 import MyImage from '@/components/MyImage'
 export default {
-    name: 'Category',
+    name: 'Category_Editor',
     data() {
         return {
             img_url: '',
@@ -51,6 +51,9 @@ export default {
     computed: {
         options() {
             return this.$store.state.topCategoryList
+        },
+        max_size() {
+            return this.$store.state.appSet.maxSize.value
         }
     },
     components: { MyImage },

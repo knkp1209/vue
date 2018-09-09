@@ -97,14 +97,15 @@ export default {
 	},
 	components: { GoodsBase, MyImage, Images, SpecTable, editor },
 	created() {
-		this.getAppSet();
+		this.fetchData();
 	},
 	watch: {
 		// 如果路由有变化，会再次执行该方法
-		'$route': 'getAppSet'
+		'$route': 'fetchData'
 	},
 	methods: {
 		fetchData() {
+			this.$store.commit('Mloading', true)
 			if (this.id === undefined) {
 				console.log('添加');
 				this.button_name = '添加';
@@ -128,24 +129,6 @@ export default {
 				_this.$router.push({ path: `/Goods/List` })
 				// alert('页面异常，请手动刷新页面，按 F5 ')
 			})
-		},
-		getAppSet() {
-			this.$store.commit('Mloading', true)
-			if (this.$store.state.appSet == false) {
-				this.$ajax({
-					dataType: 'json',
-					method: 'get',
-					url: this.base_url + '/admin/app',
-				}).then((res) => {
-					this.$store.commit('MappSet', this.$appSet(res.data.result));
-					this.fetchData();
-				}).catch((err) => {
-					console.log(err);
-					this.$message.error('系统出错')
-				})
-			} else {
-				this.fetchData();
-			}
 		},
 		getDetail(val) {
 			this.detail = val;

@@ -41,6 +41,7 @@ export default {
   created() {
     this.nodes = JSON.parse(window.sessionStorage.getItem('permission'))[0].children
     this.user = window.sessionStorage.getItem('user')
+    this.getAppSet()
   },
   methods: {
     handleCommand(command) {
@@ -59,7 +60,30 @@ export default {
         window.sessionStorage.removeItem('user')
         window.location.href = '/dist'
       })
-    }
+    },
+    getAppSet() {
+      if (this.$store.state.appSet == false) {
+        this.$ajax({
+          dataType: 'json',
+          method: 'get',
+          url: this.base_url + '/admin/app',
+        }).then((res) => {
+          let obj = {};
+          let result = res.data.result;
+          for (let i = 0; i < result.length; i++) {
+            obj[result[i].name] = {
+              value: result[i].value,
+              remark: result[i].remark
+            }
+          }
+          this.$store.commit('MappSet', obj);
+          this.$store.commit('Mloading', false)
+        }).catch((err) => {
+          console.log(err);
+          this.$message.error('系统出错')
+        })
+      }
+    },
   },
   computed: {
     /*

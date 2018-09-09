@@ -130,7 +130,7 @@ export default {
             return this.$store.state.appSet.goodsMark
         }
     },
-    components: { Tag, DynamicInput, 'category': () => import('@/components/Category')},
+    components: { Tag, DynamicInput, 'category': () => import('@/components/Category/Editor')},
     methods: {
         getSub(val) {
             this.options_sub = [];

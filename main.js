@@ -24,16 +24,6 @@ Vue.config.productionTip = true
 Vue.prototype.$ajax = axios
 Vue.prototype.base_url = '/api'
 Vue.prototype.resource_url = 'http://localhost/shop/public/uploads/';
-Vue.prototype.$appSet = (result) => {
-	let obj = {};
-	for (let i = 0; i < result.length; i++) {
-		obj[result[i].name] = {
-			value: result[i].value,
-			remark: result[i].remark
-		}
-	}
-	return obj;
-}
 
 Vue.use(VueRouter)
 // Vue.use(VueQuillEditor, /* { default global options } */)

@@ -3,7 +3,7 @@
 		<el-tabs v-model="active_name" type="border-card" @tab-click="toList">
 			<el-tab-pane label="广告图列表" name="/Home/Banner/List">
 			</el-tab-pane>
-			<el-tab-pane :label="op_name" name="/Home/Banner/Add">
+			<el-tab-pane :label="op.name" :name="'/Home/Banner/' + op.url">
 			</el-tab-pane>
 		</el-tabs>
 		<router-view />
@@ -14,7 +14,10 @@ export default {
 	name: 'Home_Banner_Index',
 	data() {
 		return {
-			op_name: '添加',
+			op:{
+				name: '添加',
+				url: 'Add'
+			}
 		}
 	},
 	computed: {
