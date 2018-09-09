@@ -93,10 +93,6 @@ export default {
 						window.sessionStorage.setItem('permission',JSON.stringify(result.permission))
 						MenuUtils(routers,result.permission)
 						_this.$router.addRoutes(routers)
-						window.sessionStorage.setItem('MmaxUpload',JSON.stringify(result.max_upload))
-						window.sessionStorage.setItem('MmaxSize',JSON.stringify(result.max_size))
-						_this.$store.commit('MmaxUpload',result.max_upload)
-						_this.$store.commit('MmaxSize',result.max_size)
 						_this.$router.push({ path: '/home' });
 					})
 					.catch(function(err){

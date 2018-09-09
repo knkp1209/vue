@@ -85,12 +85,13 @@
             <el-row type="flex" justify="left">
                 <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
                     <el-form-item label="首页卖点">
-                        <tag key="home_mark" :dynamic-tags="home_mark" :tip="'例如：热卖 新品'"></tag>
+                        <tag v-if="$store.state.appSet" key="home_mark" :dynamic-tags="home_mark.value" :tip="'例如：热卖 新品'"></tag>
                     </el-form-item>
-                    <p style="padding-left: 15px;">
-                        首页卖点说明：这里添加的首页卖点，会在首页展示。 例如：在这里添加了一个 “热卖”，那么首页会展示一个 “热卖” 模块，该模块会展示所有卖点为 “热卖” 的商品
+                    <p style="padding-left: 15px; color:#FF8F59;" v-if="$store.state.appSet">
+                        {{home_mark.remark}}
                         <br />
                         <el-button type="primary" size="mini" @click="submitHome" >保存首页卖点</el-button>
+                        <i class="el-icon-back" >只有点这里才会保存首页卖点哦</i>
                     </p>
                 </el-col>
             </el-row>
@@ -126,7 +127,7 @@ export default {
             return this.$store.state.topCategoryList
         },
         home_mark () {
-            return this.$store.state.homeMark
+            return this.$store.state.appSet.goodsMark
         }
     },
     components: { Tag, DynamicInput, 'category': () => import('@/components/Category')},
@@ -161,8 +162,8 @@ export default {
         },
         submitHome() {
             var method = 'post';
-            var data = {goods_mark:this.home_mark}
-            var url = this.base_url + '/admin/app/set';
+            var data = {goodsMark:this.home_mark.value}
+            var url = this.base_url + '/admin/app';
             this.$ajax({　
                 dataType: 'json',
                 method: method,
