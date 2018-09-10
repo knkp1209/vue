@@ -89,6 +89,10 @@ export default {
 			this.getData();
 		},
 		updateSort(index) {
+			if (this.errors.items.length > 0){
+				this.$message.error('排序只能是不小于0且不大于99999999的整数')
+				return false;
+			}
 			if (this.table_data[index].sort != this.sorts[index]) {
 				this.putData(index,'sort');
 			}
