@@ -6,7 +6,7 @@
 					<img :src="base_url + '/public/uploads/' + scope.row.url" style="height: 60px; width: 60px;" />
 				</template>
 			</el-table-column>
-			<el-table-column prop="name" label="名称">
+			<el-table-column prop="name" label="名称" >
 			</el-table-column>
 			<el-table-column prop="stock" label="库存" sortable>
 			</el-table-column>
@@ -14,13 +14,15 @@
 			</el-table-column>
 			<el-table-column prop="sell_price" label="销售价格" width="110" sortable>
 			</el-table-column>
-			<el-table-column prop="sort" label="排序" sortable>
+			<el-table-column prop="sort" label="排序" :render-header="(h,{column,$index}) => renderHeader(h,{column,$index},
+			'在输入框里输入数字后，按回车或者鼠标点击输入框以外的地方，稍等片刻即可更新成功')" sortable>
 				<template slot-scope="scope">
-					<el-input v-model="scope.row.sort" @blur="updateSort(scope.$index)" :name="'sort_' + scope.$index" v-validate="'numeric|min_value:0|max_value:99999999'">
+					<el-input v-model="scope.row.sort" @change="updateSort(scope.$index)" :name="'sort_' + scope.$index" v-validate="'numeric|min_value:0|max_value:99999999'">
 					</el-input>
 				</template>
 			</el-table-column>
-			<el-table-column label="上下架" width="100">
+			<el-table-column label="上下架" width="100" :render-header="(h,{column,$index}) => renderHeader(h,{column,$index},
+			'点击后稍等片刻即可更新成功')">
 				<template slot-scope="scope">
 					<i @click="updateShelf(scope.$index)" class="hand" :class="{ 'el-icon-success': scope.row.shelf, 'el-icon-error': !scope.row.shelf }">
 						<template v-if="scope.row.shelf">
@@ -54,7 +56,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="block goods_list">
-			<span>说明:如商品为多规格，则销售价格是最低的规格信息，总库存、总销量是所有规格相加的销量，如需要查看商品所有规格信息请点击编辑</span>
+			<span style="color:#FF8F59;">说明:如商品为多规格，则销售价格是最低的规格信息，库存、销量分别是所有的规格相加的库存和销量，如需要查看商品所有规格信息请点击编辑</span>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="current_page" :page-sizes="[2,8, 10, 15, 20, 30, 40, 50, 200]" :page-size="page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
 			</el-pagination>
 		</div>
@@ -68,7 +70,6 @@ export default {
 			current_page: 1,
 			total: 0,
 			page_size: 8,
-			sorts: [],
 			shelfs: [],
 			url: this.base_url + '/admin/goods',
 		}
@@ -77,6 +78,21 @@ export default {
 		this.getData();
 	},
 	methods: {
+		renderHeader(h, { column, $index }, tip){
+	        return(
+	        	<span>
+	        		&nbsp;{column.label}&nbsp;
+			        <el-tooltip
+			        class="item"
+			        effect="dark"
+			        content={tip}
+			        placement="bottom"
+			        >
+			          <i class="el-icon-info"></i>
+			        </el-tooltip>
+			    </span>
+			)
+		},
 		handleEdit(index, row) {
 			this.$router.push({ path: `/Goods/Editor/${row.id}` })
 		},
@@ -93,16 +109,18 @@ export default {
 				this.$message.error('排序只能是不小于0且不大于99999999的整数')
 				return false;
 			}
-			if (this.table_data[index].sort != this.sorts[index]) {
-				this.putData(index,'sort');
-			}
+			this.putData(index,'sort');
 		},
 		updateShelf(index) {
 			this.putData(index,'shelf');
 		},
 		putData(index,name) {
 			let data = {};
-			data[name] = this.table_data[index][name];
+			if (name == 'sort') {
+				data[name] = this.table_data[index][name];				
+			} else {
+				data[name] = !this.table_data[index][name];
+			}
 			this.$ajax({
 				method: 'put',
 				url: this.url + '/' + this.table_data[index].id,
@@ -126,15 +144,15 @@ export default {
 			this.$ajax({
 				method: 'delete',
 				url: this.url + '/' + id,
-			}).then(function() {
-				_this.$message.success('删除成功');
-				_this.table_data.splice(index,1);
-				_this.total = _this.total - 1;
+			}).then((res) => {
+				this.$message.success('删除成功');
+				this.table_data.splice(index,1);
+				this.total = _this.total - 1;
 				// 当前页数据全部删除，重新获取
-				if (_this.table_data.length == 0 &&  _this.total > 0 ) {
-					_this.getData();
+				if (this.table_data.length == 0 &&  this.total > 0 ) {
+					this.getData();
 				}
-			}).catch(function(err) {
+			}).catch((err) => {
 				console.log(err);
 				console.log('server',err.response);
 				_this.$message.error('删除失败');
@@ -151,23 +169,17 @@ export default {
 				method: 'get',
 				url: this.url,
 				params: params
-			}).then(function(res) {
+			}).then((res) => {
 				let { msg, result } = res.data;
-				_this.total = result.total;
-				_this.table_data = result.data;
-				_this.page_size = result.page_size;
-				_this.current_page = result.current_page;
-				_this.storeData();
-				_this.$store.commit('Mloading', false)
-			}).catch(function(err) {
+				this.total = result.total;
+				this.table_data = result.data;
+				this.page_size = result.page_size;
+				this.current_page = result.current_page;
+				this.$store.commit('Mloading', false)
+			}).catch((err) => {
 				console.log(err)
-				_this.$store.commit('Mloading', false)
+				this.$store.commit('Mloading', false)
 				alert('页面异常，请手动刷新页面，按 F5 ')
-			})
-		},
-		storeData() {
-			this.table_data.forEach((item) => {
-				this.sorts.push(item.sort);
 			})
 		}
 	}
