@@ -1,5 +1,10 @@
 <template>
-    <div>
+    <div class="goods_base">
+        <template v-if="$store.state.visibleCategory">
+            <el-dialog width="550px" title="添加分类" center :visible.sync="$store.state.visibleCategory">
+                <category :part="true"></category>
+            </el-dialog>
+        </template>
         <el-form label-width="80px">
             <el-row type="flex" justify="left">
                 <el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
@@ -44,9 +49,6 @@
                                 </el-col>
                                 <el-col :span="1">
                                     <el-button size="mini" type="primary" @click="$store.commit('MvisibleCategory',true)">添加分类</el-button>
-                                    <template v-if="$store.state.visibleCategory">
-                                        <category></category>
-                                    </template>
                                 </el-col>
                             </el-row>
                         </el-col>
@@ -90,8 +92,8 @@
                     <p style="padding-left: 15px; color:#FF8F59;" v-if="$store.state.appSet">
                         {{home_mark.remark}}
                         <br />
-                        <el-button type="primary" size="mini" @click="submitHome" >保存首页卖点</el-button>
-                        <i class="el-icon-back" >只有点这里才会保存首页卖点哦</i>
+                        <el-button type="primary" size="mini" @click="submitHome">保存首页卖点</el-button>
+                        <i class="el-icon-back">只有点这里才会保存首页卖点哦</i>
                     </p>
                 </el-col>
             </el-row>
@@ -109,24 +111,24 @@ export default {
             options_sub: [],
         }
     },
-    props:{
-        base:{ // 商品基本信息
-            type:Object,
-            required:true,
+    props: {
+        base: { // 商品基本信息
+            type: Object,
+            required: true,
         }
     },
     created() {
-        if(this.options.length == 0) {
+        if (this.options.length == 0) {
             this.getOption();
         } else {
             this.getSub(this.base.pid_cat_id);
         }
     },
     computed: {
-        options () {
+        options() {
             return this.$store.state.topCategoryList
         },
-        home_mark () {
+        home_mark() {
             return this.$store.state.appSet.goodsMark
         }
     },
@@ -135,10 +137,10 @@ export default {
         getSub(val) {
             this.options_sub = [];
             val.forEach((id) => {
-                for(var i = 0; i < this.options.length; i++) {
-                    if (this.options[i].id  == id) {
-                        if (this.options[i].children !== undefined ) {
-                            this.options_sub.push.apply(this.options_sub,this.options[i].children);
+                for (var i = 0; i < this.options.length; i++) {
+                    if (this.options[i].id == id) {
+                        if (this.options[i].children !== undefined) {
+                            this.options_sub.push.apply(this.options_sub, this.options[i].children);
                         }
                         break;
                     }
@@ -162,7 +164,7 @@ export default {
         },
         submitHome() {
             var method = 'post';
-            var data = {goodsMark:this.home_mark.value}
+            var data = { goodsMark: this.home_mark.value }
             var url = this.base_url + '/admin/app';
             this.$ajax({　
                 dataType: 'json',
@@ -180,12 +182,12 @@ export default {
 }
 
 </script>
-<style scoped>
-.el-tag+.el-tag {
+<style>
+.goods_base .el-tag+.el-tag {
     margin-left: 10px;
 }
 
-.button-new-tag {
+.goods_base .button-new-tag {
     height: 32px;
     line-height: 30px;
     margin-left: 10px;
@@ -193,11 +195,15 @@ export default {
     padding-top: 0;
 }
 
-.input-new-tag {
+.goods_base .input-new-tag {
     margin-left: 10px;
     vertical-align: bottom;
     width: 180px;
     font-size: 12px;
 }
 
+.goods_base .el-dialog__body {
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
 </style>
