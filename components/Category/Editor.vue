@@ -151,6 +151,7 @@ export default {
                         } else {
                             for (var i = 0; i < this.options.length; i++) {
                                 if (this.options[i].id == this.id) {
+                                    result.children = this.options[i].children
                                     this.options.splice(i,1,result)
                                     break;
                                 } else {
