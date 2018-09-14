@@ -56,7 +56,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="block goods_list">
-			<span style="color:#FF8F59;">说明:如商品为多规格，则销售价格是最低的规格信息，库存、销量分别是所有的规格相加的库存和销量，如需要查看商品所有规格信息请点击编辑</span>
+			<span style="color:#FF8F59;">说明:如商品为多规格，则列表显示的商品信息为多个规格中销售价格是最低的，如需要查看商品所有规格信息请点击编辑</span>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="current_page" :page-sizes="[2,8, 10, 15, 20, 30, 40, 50, 200]" :page-size="page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
 			</el-pagination>
 		</div>
