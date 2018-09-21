@@ -17,12 +17,12 @@
             </el-table-column>
             <el-table-column width="120" label="库存">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'库存','stock')" :name="'stock' + scope.$index " v-validate="'required|numeric|min_value:0|max_value:99999999'" v-model="post_data[table_data[scope.$index]['index']].stock" placeholder="库存 (必填)"></el-input>
+                    <el-input @input.native="check($event,'库存','stock')" :name="'stock' + scope.$index " v-validate="'decimal:2|min_value:0|max_value:99999999|required'" v-model="post_data[table_data[scope.$index]['index']].stock" placeholder="库存 (必填)"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="150" label="销售价">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'销售价','sell_price')" v-validate="'required|decimal:2|min_value:0|max_value:99999999'" :name="'sell_price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].sell_price" placeholder="销售价 (必填)"></el-input>
+                    <el-input @input.native="check($event,'销售价','sell_price')" v-validate="'decimal:2|min_value:0|max_value:99999999|required'" :name="'sell_price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].sell_price" placeholder="销售价 (必填)"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="150" label="原价" select-on-indeterminate>
