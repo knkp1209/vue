@@ -118,11 +118,11 @@ export default {
                 temp = {};
                 let ii = 0;
                 for (let i = 0; i < this.products.length; i++) {
-                    let spec_value = JSON.parse(this.products[i].spec_value);
+                    let spec = JSON.parse(this.products[i].spec);
                     ii = 0;
                     temp = {};
-                    for(let j in spec_value) {
-                        temp[spec_names_key[ii]] = spec_value[j];
+                    for(let j in spec) {
+                        temp[spec_names_key[ii]] = spec[j];
                         ii++;
                     }
                     temp['index'] = i;
@@ -130,7 +130,6 @@ export default {
                 }
                 this.table_data = big;
             } else {
-                console.log('yang');
                 this.post_data = this.products;
                 this.table_data = [
                     { index: 0 }
@@ -159,7 +158,7 @@ export default {
             if (value === false) {
                 this.spec_names = {}
                 this.post_data.push({
-                    spec_value: '',
+                    spec: '',
                     stock: '',
                     sell_price: '',
                     price: '',
@@ -257,7 +256,7 @@ export default {
                     temp[this.spec_names[key]] = this.table_data[i][key];
                 })
                 this.post_data.push({
-                    spec_value: JSON.stringify(temp),
+                    spec: JSON.stringify(temp),
                     stock: '',
                     sell_price: '',
                     price: '',
