@@ -30,7 +30,7 @@
 					</i>
 				</template>
 			</el-table-column>
-			<el-table-column prop="update_time" label="更新时间" width="100" sortable>
+			<el-table-column prop="update_time" label="更新时间" width="110" sortable>
 			</el-table-column>
 			<el-table-column width="145" label="操作" fixed="right">
 				<template slot-scope="scope">

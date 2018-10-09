@@ -63,6 +63,7 @@ export default {
 				cat_id: [],
 				sub_cat_id: [],
 				pid_cat_id: [],
+				freight_way_id: 0,
 			},
 			img_url: '',
 			banner_img_urls: [],
@@ -173,6 +174,7 @@ export default {
 				promise: this.base.promise,
 				cat_id: this.base.cat_id,
 				sub_cat_id: this.base.sub_cat_id,
+				freight_way_id: this.base.freight_way_id,
 				specs: this.$refs.ref_spec.spec_data,
 				products: this.$refs.ref_spec.post_data,
 				detail: this.detail,
@@ -215,6 +217,7 @@ export default {
 			this.base.cat_id = result.cat_id;
 			this.base.sub_cat_id = result.sub_cat_id;
 			this.base.pid_cat_id = result.pid_cat_id; // 用于帮助渲染
+			this.base.freight_way_id = result.freight_way_id;
 			this.detail = result.detail;
 			this.img_url = result.url;
 			this.banner_img_urls = result.banners;
