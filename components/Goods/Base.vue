@@ -87,7 +87,7 @@
       <el-row type="flex" justify="left">
         <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
           <el-form-item label="运费模板">
-            <el-select v-model="base.freight_way_id" placeholder="请选择">
+            <el-select v-model="base.freight_id" placeholder="请选择">
               <el-option v-for="(item,i) in freights" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
