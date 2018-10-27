@@ -3,7 +3,7 @@
 		<el-table :data="table_data" stripe class="goods_list" ref="goods_list">
 			<el-table-column label="主图" width="120">
 				<template slot-scope="scope">
-					<img :src="base_url + '/public/uploads/' + scope.row.url" style="height: 60px; width: 60px;" />
+					<img :src="resource_url + scope.row.url" style="height: 60px; width: 60px;" />
 				</template>
 			</el-table-column>
 			<el-table-column prop="name" label="名称" >
