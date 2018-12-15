@@ -20,17 +20,17 @@
                     <el-input @input.native="check($event,'库存','stock')" :name="'stock' + scope.$index " v-validate="'decimal:2|min_value:0|max_value:99999999|required'" v-model="post_data[table_data[scope.$index]['index']].stock" placeholder="库存 (必填)"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column width="150" label="销售价">
+            <el-table-column width="100" label="销售价">
                 <template slot-scope="scope">
                     <el-input @input.native="check($event,'销售价','sell_price')" v-validate="'decimal:2|min_value:0|max_value:99999999|required'" :name="'sell_price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].sell_price" placeholder="销售价 (必填)"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column width="150" label="原价" select-on-indeterminate>
+            <el-table-column width="100" label="原价" select-on-indeterminate>
                 <template slot-scope="scope">
                     <el-input @input.native="check($event,'原价','price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].price" placeholder="原价"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column width="150" label="成本价">
+            <el-table-column width="100" label="成本价">
                 <template slot-scope="scope">
                     <el-input @input.native="check($event,'成本价','cost_price')" v-validate="'decimal:2|min_value:0|max_value:99999999'" :name="'cost_price' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].cost_price" placeholder="成本价"></el-input>
                 </template>
@@ -50,18 +50,18 @@
                     <el-input @input.native="check($event,'重量','weight')" v-validate="'numeric|min_value:0|max_value:99999999'" :name="'weight' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].weight" placeholder="重量"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column label="条形码">
+            <el-table-column width="100" label="条形码">
                 <template slot-scope="scope">
                     <el-input @input.native="check($event,'条形码','bar_code')" v-validate="'max:14'" :name="'bar_code' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].bar_code" placeholder="条形码"></el-input>
                 </template>
             </el-table-column>
             <el-table-column width="180" label="货号">
                 <template slot-scope="scope">
-                    <el-input @input.native="check($event,'货号','product_number')" v-validate="'max:14'" :name="'product_number' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].product_number" placeholder="货号">
+                    <el-input @input.native="check($event,'货号','number')" v-validate="'max:14'" :name="'number' + scope.$index " v-model="post_data[table_data[scope.$index]['index']].number" placeholder="货号">
                     </el-input>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="80" fixed="right">
+            <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="danger" @click="deleteRow(scope.$index,table_data[scope.$index]['index'], table_data)">删除
                     </el-button>
@@ -158,7 +158,7 @@ export default {
             if (value === false) {
                 this.spec_names = {}
                 this.post_data.push({
-                    spec: '',
+                    spec: null,
                     stock: '',
                     sell_price: '',
                     price: '',
@@ -167,7 +167,7 @@ export default {
                     exp: '',
                     weight: '',
                     bar_code: '',
-                    product_number: '',
+                    number: '',
                 })
                 this.$nextTick(() => {
                     this.table_data = [
@@ -265,7 +265,7 @@ export default {
                     exp: '',
                     weight: '',
                     bar_code: '',
-                    product_number: '',
+                    number: '',
                 })
             }
         },

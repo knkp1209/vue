@@ -9,21 +9,21 @@
 					<el-row type="flex" justify="left">
 						<el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
 							<el-form-item label="商品主图">
-								<my-image v-if="$store.state.appSet" key="img_url" @emit_set_img="setImgUrl" name="img_url" :imageUrl="img_url" :max_size="max_size" :max_upload="1"></my-image>
+								<my-image v-if="$store.state.appSet" :key="'my-image' + key" @emit_set_img="setImgUrl" name="img_url" :imageUrl="img_url" :max_size="max_size" :max_upload="1"></my-image>
 							</el-form-item>
 						</el-col>
 					</el-row>
 					<el-row type="flex" justify="left">
 						<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 							<el-form-item label="商品广告图">
-								<images v-if="$store.state.appSet" key="banner_img_urls" name="banner_img_urls" :imageUrls="banner_img_urls" :multiple="true" :max_size="max_size" :max_upload="max_upload"></images>
+								<images :key="'images' + key" v-if="$store.state.appSet" name="banner_img_urls" :imageUrls="banner_img_urls" :multiple="true" :max_size="max_size" :max_upload="max_upload"></images>
 							</el-form-item>
 						</el-col>
 					</el-row>
 				</el-form>
 			</el-tab-pane>
 			<el-tab-pane label="商品规格" name="third">
-				<spec-table ref="ref_spec" :specs="specs" :products="products"></spec-table>
+				<spec-table :key="'my-image' + key" ref="ref_spec" :specs="specs" :products="products"></spec-table>
 			</el-tab-pane>
 			<el-tab-pane label="商品详情" name="fourth">
 				<!-- <rich-text :rt="rt"></rich-text> -->
@@ -52,6 +52,7 @@ export default {
 	name: 'Goods_Editor',
 	data() {
 		return {
+			key: new Date().getMilliseconds(),
 			base: {
 				name: '', // 商品名称
 				sort: '', // 商品排序
@@ -108,6 +109,7 @@ export default {
 		fetchData() {
 			this.$store.commit('Mloading', true)
 			if (this.id === undefined) {
+				this.init()
 				console.log('添加');
 				this.button_name = '添加';
 				this.$store.commit('Mloading', false)
@@ -176,7 +178,7 @@ export default {
 				sub_cat_id: this.base.sub_cat_id,
 				freight_id: this.base.freight_id,
 				specs: this.$refs.ref_spec.spec_data,
-				products: this.$refs.ref_spec.post_data,
+				products: this.$refs.ref_spec.post_data.filter(word => word != null),
 				detail: this.detail,
 				url: this.img_url,
 				banner_img_urls: this.banner_img_urls
@@ -198,8 +200,16 @@ export default {
 				data: data
 			}).then((res) => {
 				let { msg, result } = res.data
-				this.$message.success('操作成功')
 				this.button_post = false;
+				var _this = this
+				this.$message({
+		          message: '操作成功',
+		          type: 'success',
+		          duration: 1000,
+		          onClose(){
+		          	_this.$router.push({ path: `/Goods/List` })
+		          }
+		        })
 			}).catch((err) => {
 				console.log(err)
 				this.$message.error('操作失败，请重新操作')
@@ -226,6 +236,27 @@ export default {
 		},
 		toNext() {
 			this.$router.push({ path: `/Goods/Editor/${parseInt(this.id) + 1}` })
+		},
+		init() {
+			this.key = new Date().getMilliseconds(),
+			this.base = {
+				name: '', // 商品名称
+				sort: '', // 商品排序
+				unit: '', // 商品单位
+				is_shelf: true, // 是否上架
+				promise: [],
+				mark: [],
+				parameters: [],
+				cat_id: [],
+				sub_cat_id: [],
+				pid_cat_id: [],
+				freight_id: 0,
+			},
+			this.img_url = ''
+			this.banner_img_urls = []
+			this.detail = ''
+			this.specs = {}
+			this.products = []
 		}
 	}
 }

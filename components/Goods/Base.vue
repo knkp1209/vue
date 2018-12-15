@@ -172,7 +172,7 @@ export default {
       this.$ajax({
         dataType: 'json',
         method: 'get',
-        url: this.base_url + '/admin/categorys',
+        url: this.base_url + '/admin/categories',
       }).then((res) => {
         result = res.data.result
         this.$store.commit('MtopCategoryList', result)

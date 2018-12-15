@@ -109,7 +109,7 @@ export default {
 			categorys: this.$store.state.topCategoryList,
 			sorts: [],
 			shelfs: [],
-			url: this.base_url + '/admin/categorys',
+			url: this.base_url + '/admin/categories',
 			defaultProps: {
 				children: 'children',
 				label: 'name'
@@ -227,7 +227,7 @@ export default {
 			this.$ajax({
 				dataType: 'json',
 				method: 'get',
-				url: this.base_url + '/admin/categorys',
+				url: this.base_url + '/admin/categories',
 			}).then((res) => {
 				let { msg, result } = res.data
 				this.$store.commit('MtopCategoryList', result)

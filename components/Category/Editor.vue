@@ -47,7 +47,7 @@ export default {
             show: true,
             i_show: false,
             pid: '',
-            url: this.base_url + '/admin/categorys',
+            url: this.base_url + '/admin/categories',
         }
     },
     computed: {
