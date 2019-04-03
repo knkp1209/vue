@@ -66,6 +66,8 @@ export default {
             language_url: "/static/langs/zh_CN.js",
             skin_url: "/static/skins/lightgray",
             menubar: false,
+            forced_root_block:false,
+            valid_children : "+body[style]",
             toolbar: 'styleselect | fontselect | formatselect | fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image  media | table | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | preview removeformat  hr | paste code  link | undo redo | fullscreen ',
             plugins: ' paste importcss image code table advlist fullscreen link   media lists textcolor colorpicker hr preview ',
             // Image
