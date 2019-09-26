@@ -83,7 +83,7 @@
 			},
 			logout() {
 				window.localStorage.clear()
-				window.location.href = '/dist'
+				window.location.href = this.$root._router.options.base
 				cookie.set('login',0,-1)
 			}
 		},
