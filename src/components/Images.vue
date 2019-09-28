@@ -93,10 +93,10 @@ export default {
     * 添加成功上传的图片ID
     */
     myAdd(response) {
-      this.imageUrls.push(response['result'])
+      this.imageUrls.push(response['data'])
     },
     myDel(file) {
-      let val = file['response']['result'];
+      let val = file['response']['data'];
       let index = this.imageUrls.indexOf(val);
       if (index > -1) {
         this.imageUrls.splice(index,1);

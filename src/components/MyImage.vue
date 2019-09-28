@@ -84,7 +84,7 @@ export default {
     * 添加成功上传的图片ID
     */
     myAdd(response) {
-      this.$emit('emit_set_img',response['result']['url']);
+      this.$emit('emit_set_img',response['data']['url']);
     },
     myDel(file) {
       this.$emit('emit_set_img','');
