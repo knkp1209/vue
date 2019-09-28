@@ -11,7 +11,7 @@ export default {
 	'Accounts-clean': `${_super}/accounts-clean`, // Delete
 	'Provinces-Cities':`${admin}/provinces/cities`, // Get
 	Config: `${admin}/config`,
-	Upload: `${admin}/upload`,
+	Upload: `/${admin}/upload`,
 	Banners: `${admin}/banners`,
 	Categories: `${admin}/categories`,
 	Goods: `${admin}/goods`,

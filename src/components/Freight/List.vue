@@ -24,7 +24,7 @@
 					{{item.name}}
 				</span>
 				<span>
-					<img class="cat_img" :src="$api.StaticResource + item.url" />
+					<img class="cat_img" :src="$config.StaticResource + item.url" />
 				</span>
 				<span>
 					<i
@@ -65,7 +65,7 @@
 					{{sub.name}}
 				</span>
 				<span>
-					<img :src="$api.StaticResource + sub.url" />
+					<img :src="$config.StaticResource + sub.url" />
 				</span>
 				<span>
 					<i

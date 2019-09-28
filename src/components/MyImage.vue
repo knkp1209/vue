@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-upload :ref="name"
-		  :action="$api.StaticResource + '/admin/upload'"
+		  :action="$config.BaseUrl + $api.Upload"
 		  list-type="picture-card"
 		  drag
       :file-list="fileList"
@@ -32,7 +32,7 @@ export default {
   created() {
     if (this.imageUrl != '') {
       this.fileList.push({
-        url: this.$api.StaticResource  + this.imageUrl,
+        url: this.$config.StaticResource  + this.imageUrl,
         response:{result:this.imageUrl},
       });
       this.$nextTick(() => {

@@ -3,7 +3,7 @@
 		<el-table :data="table_data" stripe  ref="banner_list" class="banner_list">
 			<el-table-column label="主图" width="270">
 				<template slot-scope="scope">
-					<img :src="$api.StaticResource + scope.row.url" style="height: 104px; width: 250px;" />
+					<img :src="$config.StaticResource + scope.row.url" style="height: 104px; width: 250px;" />
 				</template>
 			</el-table-column>
 			<el-table-column prop="remark" label="备注">

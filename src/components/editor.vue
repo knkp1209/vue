@@ -89,7 +89,7 @@ export default {
                     // 服务端接收文件的参数名，文件数据，文件名
                     formData.append('file', blobInfo.blob(), blobInfo.filename())
                     _this.$http(_this.$api.Upload,'save',{data: formData}).then( res => {
-                        success(_this.$api.StaticResource + res.data.result.url) // 返回图片地址
+                        success(_this.$config.StaticResource + res.data.result.url) // 返回图片地址
                     }).catch( msg => {
                        failure(msg)
                     })

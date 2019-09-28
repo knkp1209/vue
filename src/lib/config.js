@@ -4,8 +4,8 @@ if (process.env.NODE_ENV === 'development') { // 开发环境
   base_url = '/api'
   static_resource_url = 'http://t.com/uploads/';
 } else {
-  base_url = ''
-  static_resource_url = 'https://yangwenhang.org/uploads/';
+  base_url = 'http://applet.site'
+  static_resource_url = 'http://applet.site/uploads/';
 }
 export default {
 	BaseUrl: base_url,
