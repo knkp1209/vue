@@ -32,7 +32,7 @@ export default {
   created() {
     if (this.imageUrl != '') {
       this.fileList.push({
-        url: this.$config.StaticResource  + this.imageUrl,
+        url: this.$config.StaticResourceUrl  + this.imageUrl,
         response:{result:this.imageUrl},
       });
       this.$nextTick(() => {
