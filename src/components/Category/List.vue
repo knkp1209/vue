@@ -1,313 +1,112 @@
 <template>
-	<div class="category">
-		<div class="head">
-			<span>分类名称</span>
-			<span>分类图标</span>
-			<span>显示或隐藏</span>
-			<span>首页显示隐藏</span>
-			<span>排序
-		        <el-tooltip
-		        class="item"
-		        effect="dark"
-		        content="在输入框里输入数字后，按回车或者鼠标点击输入框以外的地方，稍等片刻即可更新成功"
-		        placement="bottom"
-		        >
-		          <i class="el-icon-info"></i>
-		        </el-tooltip>
-			</span>
-			<span>操作</span>
-		</div>
-		<div v-for="(item,i) in categorys" :key="i" class="content">
-			<div :class="{ 'two': i%2 == 0 }">
-				<span>
-					<i v-show="item.children" :class="{ 'el-icon-circle-plus': !item.open, 'el-icon-remove': item.open }" @click="op(i,item)"></i>
-					{{item.name}}
-				</span>
-				<span>
-					<img class="cat_img" :src="$config.StaticResource + item.url" />
-				</span>
-				<span>
-					<i
-					@click="updateHidden(item)"
-					:class="{'el-icon-success' : !item.hidden, 'el-icon-error' : item.hidden}">
-						<template v-if="item.hidden">
-							隐藏
-						</template>
-						<template v-else>
-							显示
-						</template>
-					</i>
-				</span>
-				<span>
-					<i
-					@click="updateIHidden(item)"
-					:class="{'el-icon-success' : !item.i_hidden, 'el-icon-error' : item.i_hidden}">
-						<template v-if="item.i_hidden">
-							隐藏
-						</template>
-						<template v-else>
-							显示
-						</template>
-					</i>
-				</span>
-				<span>
-					<input type="text" v-model="item.sort" class="el-input__inner" :name="'sort_' + item.id" v-validate="'numeric|min_value:0|max_value:99999999'" @change="updateSort(item)"/>
-				</span>
-				<span>
-					<button size="mini" @click="handleEdit(item)"><i>编辑</i></button>
-					<button class="delete" size="mini" @click="handleDel(item)"><i>删除</i></button>
-				</span>
-			</div>
-			<div v-show="item.open" v-for="(sub,j) in item.children" :key="j">
-				<span>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					{{sub.name}}
-				</span>
-				<span>
-					<img :src="$config.StaticResource + sub.url" />
-				</span>
-				<span>
-					<i
-					@click="updateHidden(sub)"
-					:class="{'el-icon-success' : !sub.hidden, 'el-icon-error' : sub.hidden}">
-						<template v-if="sub.hidden">
-							隐藏
-						</template>
-						<template v-else>
-							显示
-						</template>
-					</i>
-				</span>
-				<span>
-					<i
-					@click="updateIHidden(sub)"
-					:class="{'el-icon-success' : !sub.i_hidden, 'el-icon-error' : sub.i_hidden}">
-						<template v-if="sub.i_hidden">
-							隐藏
-						</template>
-						<template v-else>
-							显示
-						</template>
-					</i>
-				</span>
-				<span>
-					<input type="text" v-model="sub.sort" class="el-input__inner" :name="'sort_' + sub.id" v-validate="'numeric|min_value:0|max_value:99999999'" @change="updateSort(sub)"/>
-				</span>
-				<span>
-					<button size="mini" @click="handleEdit(sub)"><i>编辑</i></button>
-					<button class="delete" size="mini" @click="handleDel(sub)"><i>删除</i></button>
-				</span>
-			</div>
+	<div>
+		<el-row class="tableBefore">
+			<el-col>
+				<el-button size="mini" type="danger" @click="batchDelete()">批量删除</el-button>
+			</el-col>
+		</el-row>
+		<el-table :data="table_data" stripe
+							:header-cell-style="{'text-align': 'center'}" :cell-style="{'text-align': 'center'}"
+							max-height="760"
+							row-key="id"
+							:tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+							border
+							@selection-change="handleSelectionChangeRow"
+		>
+			<el-table-column
+							type="selection"
+							width="55">
+			</el-table-column>
+			<el-table-column prop="name" label="分类名称">
+			</el-table-column>
+			<el-table-column label="图标" width="150">
+				<template slot-scope="scope">
+					<img :src="$config.StaticResourceUrl + scope.row.url" />
+				</template>
+			</el-table-column>
+			<el-table-column prop="sort" label="排序" >
+			</el-table-column>
+			<el-table-column label="在分类页显示">
+				<template slot-scope="scope">
+					<span v-if="!scope.row.hidden"><i class="el-icon-success"></i></span>
+					<span v-else><i class="el-icon-error"></i></span>
+				</template>
+			</el-table-column>
+			<el-table-column label="在首页显示">
+				<template slot-scope="scope">
+					<span v-if="!scope.row.i_hidden"><i class="el-icon-success"></i></span>
+					<span v-else><i class="el-icon-error"></i></span>
+				</template>
+			</el-table-column>
+			<el-table-column prop="update_time" label="更新时间" width="200" sortable>
+			</el-table-column>
+			<el-table-column label="操作" fixed="right" width="160">
+				<template slot-scope="scope">
+					<div v-loading="scope.row.id === false">
+						<el-button size="mini" @click="handleEditRow(scope.$index, scope.row)">编辑</el-button>
+						<el-button size="mini" type="danger" @click="deleteData(scope.$index, scope.row)">删除</el-button>
+					</div>
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="pagination">
+			<el-pagination @size-change="handleSizeChangePage" @current-change="handleCurrentChangePage"
+										 :current-page="current_page"
+										 :page-sizes="[2,8, 10, 15, 20, 30, 40, 50, 200]" :page-size="page_size"
+										 layout="total, sizes, prev, pager, next, jumper" :total="total">
+			</el-pagination>
 		</div>
 	</div>
 </template>
 <script>
-export default {
-	data() {
-		return {
-			categorys: this.$store.state.topCategoryList,
-			sorts: [],
-			shelfs: [],
-			defaultProps: {
-				children: 'children',
-				label: 'name'
+	export default {
+		name: 'CategoryList',
+		data() {
+			return {
+				table_data: [],
+				selected_ids: [],
+				current_page: 1,
+				total: 0,
+				page_size: 10,
 			}
+		},
+		created() {
+			this.requestData();
+		},
+		methods: {
+			handleSelectionChangeRow(selection) {
+				this.selected_ids = [];
+				for (var i in selection) {
+					this.selected_ids.push(selection[i]['id'])
+				}
+			},
+			handleEditRow(index, row) {
+				this.$activationNav('/Category/Create', `/Category/Update/${row.id}`)
+			},
+			handleSizeChangePage(val) {
+				this.page_size = val;
+				this.requestData();
+			},
+			handleCurrentChangePage(val) {
+				this.current_page = val;
+				this.requestData();
+			},
+			deleteData(index, row) { // 这里的row还是双向绑定的
+				this.$_delete(index, row, this.$api.Category)
+			},
+			batchDelete() {
+				this.$_batchDelete('Category')
+			},
+			requestData() {
+				this.$getList(this.$api.Category)
+			},
 		}
-	},
-	created() {
-		if (this.$store.state.topCategoryList.length == 0) {
-			this.fetchData();
-		}
-	},
-	methods: {
-		op(i, item) {
-			if (item.open == false) {
-				item.open = true;
-				this.$set(this.categorys, i, item)
-			} else {
-				item.open = false;
-				this.$set(this.categorys, i, item)
-			}
-		},
-		handleEdit(category) {
-			this.$activationNav('/Category/Add')
-			this.$router.push({
-				name: 'category/editor',
-				params: {
-					category,
-					id: category.id
-				}
-			})
-		},
-		handleDel(category) {
-			this.deleteData(category);
-		},
-		updateSort(category) {
-			if (this.errors.items.length > 0) {
-				this.$message.error('排序只能是不小于0且不大于99999999的整数')
-				return false;
-			}
-			this.putData(category, 'sort');
-		},
-		updateHidden(category) {
-			this.putData(category, 'hidden');
-		},
-		updateIHidden(category) {
-			this.putData(category, 'i_hidden');
-		},
-		putData(category, name) {
-			let data = {};
-			if (name == 'sort') {
-				data[name] = category[name]
-			} else {
-				data[name] = !category[name]
-			}
-			this.$http(this.$api.Categories,'update',{id: category.id}).then( res => {
-				if (name != 'sort') {
-					category[name] = !category[name]
-				}
-				this.$message.success(res.data.msg);
-			}).catch( msg => {
-				this.$message.error(msg);
-			})
-		},
-		deleteData(category) {
-			this.$http(this.$api.Categories,'delete',{id:category.id}).then(res => {
-				this.$message.success(res.data.msg);
-				for (var i = 0; i < this.categorys.length; i++) {
-					if (this.categorys[i].id == category.id) {
-						this.categorys.splice(i, 1)
-						break;
-					} else {
-						if (this.categorys[i].children != undefined) {
-							for (var j = 0; j < this.categorys[i].children.length; j++) {
-								if (this.categorys[i].children[j].id == category.id) {
-									this.categorys[i].children.splice(j, 1);
-									break;
-								}
-							}
-						}
-					}
-				}
-			}).catch( msg => {
-				this.$message.error(msg);
-			})
-		},
-		getData() {
-			this.$store.commit('Mloading', true)
-			this.$http(this.$api.Categories,'index').then( res => {
-				let { result } = res.data;
-				this.table_data = result;
-				this.storeData();
-				this.$store.commit('Mloading', false)
-			}).catch( msg => {
-				this.$message.error(msg)
-				this.$store.commit('Mloading', false)
-			})
-		},
-		storeData() {
-			this.table_data.forEach((item) => {
-				this.sorts.push(item.sort);
-			})
-		},
-		fetchData() {
-			this.$http(this.$api.Categorys,'index').then( res => {
-				let { msg, result } = res.data
-				this.$store.commit('MtopCategoryList', result)
-				this.categorys = result
-			}).catch(msg => {
-				this.$message.error(msg)
-			})
-		},
 	}
-}
-
 </script>
-<style>
-.category {
-	background: #FFFFFF;
-}
 
-.category .head {
-	display: flex;
-	height: 60px;
-	border-bottom: 1px solid #dcdfe6;
-}
-
-.category .content div {
-	display: flex;
-	height: 100px;
-	background: #FFFFFF;
-}
-
-.category .content div:hover {
-	background: #ebeef5;
-}
-
-.category .content .two {
-	background: #fafafa;
-}
-
-.category span {
-	flex: 2;
-	width: 200px;
-	font-size: 18px;
-	text-align: left;
-	padding-left: 20px;
-}
-
-.category .head span {
-	height: 60px;
-	line-height: 60px;
-	color: #909399;
-}
-
-.category .content span {
-	height: 100px;
-	line-height: 100px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.category .content span>i {
-	color: green;
-	cursor: pointer;
-}
-
-.category button {
-	display: inline-block;
-	line-height: 1;
-	white-space: nowrap;
-	cursor: pointer;
-	background: #fff;
-	border: 1px solid #dcdfe6;
-	color: #606266;
-	-webkit-appearance: none;
-	text-align: center;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-	outline: 0;
-	margin: 0;
-	-webkit-transition: .1s;
-	transition: .1s;
-	font-weight: 500;
-	padding: 5px 10px;
-	font-size: 12px;
-	border-radius: 3px;
-}
-
-.category .delete {
-	background-color: #f56c6c;
-	border-color: #f56c6c;
-	color: #FFFFFF;
-}
-
-.category img {
-	width: 80px;
-	height: 80px;
-	padding-top: 10px;
-}
-
+<style scoped>
+	img {
+		width: 100px;
+		height: 100px;
+	}
 </style>

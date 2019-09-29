@@ -10,7 +10,6 @@ const store = new Vuex.Store({
     config:false, // 应用设置
     activeGoodsTabs: 'first', // 激活的商品标签页
     activeHomeBannerTabs: '/Home/Banner/List', // 激活的首页广告标签页
-    topCategoryList: [], // 顶级分类列表
     visibleCategory: false, // 分类添加功能是否打开
     dialogSpecVisible:false, // 规格选择是否打开
 		navIndex:'/Goods/List',
@@ -27,9 +26,6 @@ const store = new Vuex.Store({
     },
     MactiveHomeBannerTabs (state,string){
       state.activeHomeBannerTabs = string
-    },
-    MtopCategoryList (state,arr){
-      state.topCategoryList = arr
     },
     MvisibleCategory (state,bool) {
       state.visibleCategory = bool

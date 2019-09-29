@@ -50,8 +50,9 @@ export default function (Vue) {
 			}
 		}
 		*/
-
-		if (result[name]) {
+		let temp = result[name];
+		delete result[name]
+		if (temp) {
 			return true;
 		} else {
 			return false;

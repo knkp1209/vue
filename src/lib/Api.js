@@ -13,7 +13,7 @@ export default {
 	Config: `${admin}/config`,
 	Upload: `/${admin}/upload`,
 	Banners: `${admin}/banners`,
-	Categories: `${admin}/categories`,
+	Category: `${admin}/categories`,
 	Goods: `${admin}/goods`,
 	Specs:`${admin}/specs`,
 	Freights: `${admin}/freights`,
