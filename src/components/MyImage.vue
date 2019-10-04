@@ -33,7 +33,7 @@ export default {
     if (this.imageUrl != '') {
       this.fileList.push({
         url: this.$config.StaticResourceUrl  + this.imageUrl,
-        response:{result:this.imageUrl},
+        response:{data:this.imageUrl},
       });
       this.$nextTick(() => {
         this.$refs[this.name].$el.children[1].style.display = 'none';
