@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-switch class="s_spec" v-model="unified" active-text="多规格" inactive-text="统一规格" @change="manySpec"></el-switch>
-        <el-button v-if="unified" type="primary" size="mini" @click="$store.commit('MdialogSpecVisible', true)">添加规格</el-button>
+        <el-button v-if="unified" type="primary" size="mini" @click="$store.commit('MdialogSpecVisible', true)">设置规格</el-button>
         <keep-alive>
             <template v-if="$store.state.dialogSpecVisible">
                     <Spec @e_spec_list="createSpecTable"></Spec>

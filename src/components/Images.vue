@@ -36,7 +36,7 @@ export default {
     for(let i = 0; i < this.imageUrls.length; i++) {
       temp = {
         url: this.$config.StaticResourceUrl  + this.imageUrls[i]['url'],
-        response:{result:this.imageUrls[i]},
+        response:{data:this.imageUrls[i]},
       }
       this.fileList.push(temp);
     }

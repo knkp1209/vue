@@ -71,9 +71,8 @@ export default {
          */
         getSepcList() {
             this.spec_loading = true
-            this.$http(this.$api.Specs,'index').then(res => {
-                let { msg, result } = res.data
-                this.spec_list = result
+            this.$http(this.$api.Specs,'index').then(({data}) => {
+                this.spec_list = data
                 this.creatCheckboxGroup()
                 this.spec_loading = false
             }).catch(msg => {
@@ -102,14 +101,13 @@ export default {
                 data = {}
             }
             params.data = data
-            this.$http(this.$api.Specs,type,params).then(res => {
-                let { msg, result } = res.data
+            this.$http(this.$api.Specs,type,params).then(({data}) => {
                 this.dialog_add_spec_visible = false
                 this.add_spec_loading = false
                 if (is_delete === true) {
                     delete this.spec_list[this.spec_id]
                 } else {
-                    this.spec_list = result
+                    this.spec_list = data
                     this.creatCheckboxGroup()
                 }
             }).catch(msg => {

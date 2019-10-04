@@ -16,7 +16,7 @@ export default {
 	Category: `${admin}/categories`,
 	Goods: `${admin}/goods`,
 	Specs:`${admin}/specs`,
-	Freights: `${admin}/freights`,
+	Freight: `${admin}/freights`,
 	Labels: `${admin}/labels`,
 	Flash: `${admin}/productFlash`,
 	Team: `${admin}/productTeams`,

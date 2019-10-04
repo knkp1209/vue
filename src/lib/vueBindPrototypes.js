@@ -80,6 +80,24 @@ export default function (Vue) {
 		Object.assign(this, result)
 	}
 
+	// 绑定变量
+	Vue.prototype.$bindVars = function (names,result,objName = false) {
+		let name,asName;
+		for (let i in names) {
+			name = names[i];
+			asName = name;
+			if (typeof name == 'object') {
+				asName = name[0];
+				name = name[1];
+			}
+			if (objName) {
+				this.$set(this[objName],asName,result[name]);
+			} else {
+				this[asName] = result[name];
+			}
+		}
+	}
+
 	// 激活导航栏
 	Vue.prototype.$activationNav = function (index, path = false) {
 		this.$store.commit('MnavIndex', 'reset') // reset 可以是任意值

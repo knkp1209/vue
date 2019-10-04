@@ -1,211 +1,102 @@
 <template>
-  <div class="goods_base">
-    <template v-if="$store.state.visibleCategory">
-      <el-dialog width="550px" title="添加分类" center :visible.sync="$store.state.visibleCategory">
-        <category :part="true"></category>
-      </el-dialog>
-    </template>
-    <el-form label-width="80px">
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
-          <el-form-item label="名称">
-            <el-input v-model="base.name" name="name" v-validate="'required|max:200'" placeholder="商品名称 (必填)"></el-input>
-            <i class="my_err" v-show="errors.has('name')">{{errors.first('name')}}</i>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
-          <el-form-item label="单位">
-            <el-input v-model="base.unit" name="unit" v-validate="'max:10'" placeholder="计件单位。如:件,箱,个"></el-input>
-            <i class="my_err" v-show="errors.has('unit')">{{errors.first('unit')}}</i>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
-          <el-form-item label="排序">
-            <el-input v-model="base.sort" name="sort" v-validate="'numeric|min_value:0|max_value:99999999'" placeholder="填写的数字越大，排序越靠前"></el-input>
-            <i class="my_err" v-show="errors.has('sort')">{{errors.first('sort')}}</i>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-form-item label="分类">
-          <div>
-            <el-col :xs="24" :sm="20" :md="16" :lg="14" :xl="18">
-              <el-row type="flex" :gutter="10">
-                <el-col :span="11">
-                  <el-select v-model="base.cat_id" filterable multiple style="width: 100%;" placeholder="请选择" @change="getSub">
-                    <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-                    </el-option>
-                  </el-select>
-                </el-col>
-                <el-col :span="11">
-                  <el-select v-model="base.sub_cat_id" filterable multiple style="width: 100%;" placeholder="请选择">
-                    <el-option v-for="item in options_sub" :key="item.id" :label="item.name" :value="item.id">
-                    </el-option>
-                  </el-select>
-                </el-col>
-                <el-col :span="1">
-                  <el-button size="mini" type="primary" @click="$store.commit('MvisibleCategory',true)">添加分类</el-button>
-                </el-col>
-              </el-row>
-            </el-col>
-          </div>
-        </el-form-item>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-          <el-form-item label="上下架">
-            <el-switch v-model="base.is_shelf" active-text="上架" inactive-text="下架">
-            </el-switch>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-          <el-form-item label="商品参数">
-            <dynamic-input :parameters="base.parameters" :tip_name="'上市时间'" :tip_value="'2018年8月20日'"></dynamic-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-          <el-form-item label="服务承诺">
-            <tag key="promise" :dynamic-tags="base.promise" :tip="'例如：包邮 正品保证 七天退换'"></tag>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-          <el-form-item label="商品标签">
-              <el-checkbox-group v-model="base.label" size="small">
-                <el-checkbox-button v-for="label in labels" :label="label.id" :key="label.id">{{label.title}}</el-checkbox-button>
-              </el-checkbox-group>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
-          <el-form-item label="运费模板">
-            <el-select v-model="base.freight_id" placeholder="请选择">
-              <el-option v-for="(item,i) in freights" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-  </div>
+	<div class="goods_base">
+		<el-form label-width="80px">
+			<el-row type="flex" justify="left">
+				<el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
+					<el-form-item label="名称">
+						<el-input v-model="base.name" name="name" v-validate="'required|max:200'"
+											placeholder="商品名称 (必填)"></el-input>
+						<i class="my_err" v-show="errors.has('name')">{{errors.first('name')}}</i>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row type="flex" justify="left">
+				<el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
+					<el-form-item label="单位">
+						<el-input v-model="base.unit" name="unit" v-validate="'max:10'" placeholder="计件单位。如:件,箱,个"></el-input>
+						<i class="my_err" v-show="errors.has('unit')">{{errors.first('unit')}}</i>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row type="flex" justify="left">
+				<el-col :xs="24" :sm="24" :md="16" :lg="8" :xl="8">
+					<el-form-item label="排序">
+						<el-input v-model="base.sort" name="sort" v-validate="'numeric|min_value:0|max_value:99999999'"
+											placeholder="填写的数字越大，排序越靠前"></el-input>
+						<i class="my_err" v-show="errors.has('sort')">{{errors.first('sort')}}</i>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row type="flex" justify="left">
+				<el-col :xs="24" :sm="20" :md="16" :lg="12" :xl="8">
+					<el-form-item label="上下架">
+						<el-switch v-model="base.is_shelf" active-text="上架" inactive-text="下架">
+						</el-switch>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row type="flex" justify="left">
+				<el-form-item label="分类">
+					<div>
+						<el-col :xs="24" :sm="20" :md="16" :lg="14" :xl="18">
+							<el-cascader
+											v-model="base.categoriesSelected"
+											:props="{ multiple: true, label:'name', value:'id' }"
+											:options="base.categories"
+							>
+								<!--@change="handleChange"-->
+							</el-cascader>
+						</el-col>
+					</div>
+				</el-form-item>
+			</el-row>
+		</el-form>
+	</div>
 </template>
 <script>
-import Tag from '@/components/Tag'
-import DynamicInput from '@/components/DynamicInput'
-// import Category from '@/components/Category'
-export default {
-  name: 'Goods_Base',
-  data() {
-    return {
-      options_sub: [],
-      freights: [{
-        id: 0,
-        name: '包邮（不使用运费模板）'
-      }],
-      labels: [],
-    }
-  },
-  props: {
-    base: { // 商品基本信息
-      type: Object,
-      required: true,
-    }
-  },
-  created() {
-    this.getFreights()
-    if (this.options.length == 0) {
-      this.getOption();
-    } else {
-      this.getSub(this.base.pid_cat_id);
-    }
-    this.requestLabel();
-  },
-  computed: {
-    options() {
-      return this.$store.state.topCategoryList
-    }
-  },
-  components: {
-    Tag,
-    DynamicInput,
-    'category': () =>
-      import('@/components/Category/Editor')
-  },
-  methods: {
-    getSub(val) {
-      this.options_sub = [];
-      val.forEach((id) => {
-        for (var i = 0; i < this.options.length; i++) {
-          if (this.options[i].id == id) {
-            if (this.options[i].children !== undefined) {
-              this.options_sub.push.apply(this.options_sub, this.options[i].children);
-            }
-            break;
-          }
-        }
-      })
-    },
-    getOption() {
-      let result = [];
-      this.$http(this.$api.Categories,'index').then( res => {
-        result = res.data.result
-        this.$store.commit('MtopCategoryList', result)
-        this.getSub(this.base.pid_cat_id);
-      }).catch( msg => {
-        this.$message.error(msg)
-      })
-    },
-    getFreights() {
-      this.$http(this.$api.Freights,'index').then( res => {
-        this.freights.push.apply(this.freights, res.data.result)
-      }).catch( msg => {
-      	this.$message.error(msg)
-      })
-    },
-    requestLabel() {
-      this.$http(this.$api.Labels,'index').then( res => {
-        this.labels = res.data.result;
-      }).catch( msg => {
-        this.$message.error(msg);
-      })
-    }
-  }
-}
+	import Tag from '@/components/Tag'
+	import DynamicInput from '@/components/DynamicInput'
+	// import Category from '@/components/Category'
+	export default {
+		name: 'Goods_Base',
+		data() {
+			return {
+			}
+		},
+		props: {
+			base: { // 商品基本信息
+				type: Object,
+				required: true,
+			}
+		},
+		created() {
+		},
+	}
 
 </script>
 <style>
-.goods_base .el-tag+.el-tag {
-  margin-left: 10px;
-}
+	.goods_base .el-tag + .el-tag {
+		margin-left: 10px;
+	}
 
-.goods_base .button-new-tag {
-  height: 32px;
-  line-height: 30px;
-  margin-left: 10px;
-  padding-bottom: 0;
-  padding-top: 0;
-}
+	.goods_base .button-new-tag {
+		height: 32px;
+		line-height: 30px;
+		margin-left: 10px;
+		padding-bottom: 0;
+		padding-top: 0;
+	}
 
-.goods_base .input-new-tag {
-  margin-left: 10px;
-  vertical-align: bottom;
-  width: 180px;
-  font-size: 12px;
-}
+	.goods_base .input-new-tag {
+		margin-left: 10px;
+		vertical-align: bottom;
+		width: 180px;
+		font-size: 12px;
+	}
 
-.goods_base .el-dialog__body {
-  padding-bottom: 0px;
-  padding-top: 0px;
-}
+	.goods_base .el-dialog__body {
+		padding-bottom: 0px;
+		padding-top: 0px;
+	}
 
 </style>

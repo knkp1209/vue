@@ -3,7 +3,7 @@
     <el-table :data="table_data" stripe class="goods_list" ref="goods_list" :header-cell-style="{'text-align': 'center'}" :cell-style="{'text-align': 'center'}">
       <el-table-column label="主图" width="80">
         <template slot-scope="scope">
-          <img :src="$config.StaticResource + scope.row.url" style="height: 60px; width: 60px;" />
+          <img :src="$config.StaticResourceUrl + scope.row.url" style="height: 60px; width: 60px;" />
 				</template>
       </el-table-column>
       <el-table-column prop="name" label="名称" width="150">
@@ -81,7 +81,7 @@ export default {
     }
   },
   created() {
-    this.getData();
+    this.requestData();
   },
   methods: {
     renderHeader(h, { column, $index }, tip) {
@@ -94,16 +94,15 @@ export default {
       ])
     },
     handleEdit(index, row) {
-			this.$activationNav('/Goods/Add')
-      this.$router.push({ path: `/Goods/Editor/${row.id}` })
+			this.$activationNav('/Goods/Create', `/Goods/Update/${row.id}`)
     },
     handleSizeChange(val) {
       this.page_size = val;
-      this.getData();
+      this.requestData();
     },
     handleCurrentChange(val) {
       this.current_page = val;
-      this.getData();
+      this.requestData();
     },
     updateSort(index) {
       if (this.errors.items.length > 0) {
@@ -142,31 +141,14 @@ export default {
         this.total = this.total - 1;
         // 当前页数据全部删除，重新获取
         if (this.table_data.length == 0 && this.total > 0) {
-          this.getData();
+          this.requestData();
         }
       }).catch( msg => {
         this.$message.error(msg);
       })
     },
-    getData() {
-      this.$store.commit('Mloading', true);
-      let params = {
-      	data: {
-					current_page: this.current_page,
-					page_size: this.page_size,
-				}
-      };
-      this.$http(this.$api.Goods,'index',{data: params}).then( res => {
-        let { msg, result } = res.data;
-        this.total = result.total;
-        this.table_data = result.data;
-        this.page_size = result.page_size;
-        this.current_page = result.current_page;
-        this.$store.commit('Mloading', false)
-      }).catch( msg => {
-        this.$store.commit('Mloading', false)
-        this.$message.error(msg)
-      })
+    requestData() {
+    	this.$getList(this.$api.Goods);
     }
   }
 }
@@ -177,9 +159,6 @@ export default {
   float: right;
 }
 
-.goods_list .el-icon-success {
-  color: green;
-}
 
 .goods_list .hand {
   cursor: pointer;

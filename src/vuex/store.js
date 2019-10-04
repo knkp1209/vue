@@ -8,7 +8,6 @@ const store = new Vuex.Store({
   state: {
     loading: true,
     config:false, // 应用设置
-    activeGoodsTabs: 'first', // 激活的商品标签页
     activeHomeBannerTabs: '/Home/Banner/List', // 激活的首页广告标签页
     visibleCategory: false, // 分类添加功能是否打开
     dialogSpecVisible:false, // 规格选择是否打开
@@ -20,9 +19,6 @@ const store = new Vuex.Store({
     },
     Mconfig (state,obj) {
       state.config = obj
-    },
-    MactiveGoodsTabs (state,string){
-      state.activeGoodsTabs = string
     },
     MactiveHomeBannerTabs (state,string){
       state.activeHomeBannerTabs = string
