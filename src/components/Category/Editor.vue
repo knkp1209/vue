@@ -39,7 +39,7 @@
 									:imageUrl="img_url" :max_size="$store.state.config.maxSize.value" :max_upload="1"></my-image>
 			</el-form-item>
 		</el-form>
-		<div class="footer" v-loading="add_category_loading">
+		<div class="footer" v-loading="add_loading">
 			<el-button @click="cancel">取 消</el-button>
 			<el-button @click="post" type="primary">{{op_name}}</el-button>
 		</div>
@@ -54,7 +54,7 @@
 			return {
 				op_name: '添 加',
 				loading: false, // 加载单图组件
-				add_category_loading: false,
+				add_loading: false,
 				pid_disabled: false,
 				parents: [],
 
